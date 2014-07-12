@@ -1,0 +1,62 @@
+<?php defined('SYSPATH') or die('No direct script access.');
+
+class Model_PMProductMaster extends ORM {
+	
+	protected $_table_name = 'pm_product_master';
+	
+	protected $_primary_key = 'no_jp';
+	
+	protected $_table_columns = array(
+			"id" => array("type" => "int"),
+			//"customer" => array("type" => "string"),
+			//"prod_sn" => array("type" => "int"),
+			//"status" => array("type" => "string"),
+			"no_jp" => array("type" => "string"),
+			//"factory_no" => array("type" => "string"),
+			"made" => array("type" => "string"),
+			"model" => array("type" => "string"),
+			"model_no" => array("type" => "string"),
+			"year" => array("type" => "string"),
+			//"item_group" => array("type" => "string"),
+			"material" => array("type" => "string"),
+			"product_desc" => array("type" => "string"),
+			//"product_desc_ch" => array("type" => "string"),
+			//"product_desc_jp" => array("type" => "string"),
+			"pcs" => array("type" => "int"),
+			"colour" => array("type" => "string"),
+			"colour_no" => array("type" => "string"),
+			/* "moq" => array("type" => "int"),
+			"molding" => array("type" => "double"),
+			"cost" => array("type" => "double"),*/
+			"kaito" => array("type" => "double"),
+			/*"other" => array("type" => "double"),
+			"buy_date" => array("type" => "string"),
+			"receive_date" => array("type" => "string"),*/
+			"supplier" => array("type" => "string"),
+			/*"purchase_cost" => array("type" => "double"),*/
+			"business_price" => array("type" => "double"),
+			//"auction_price" => array("type" => "double"),
+			/*"kaito_price" => array("type" => "double"),
+			"factory_date" => array("type" => "timestamp"),
+			"pack_remark" => array("type" => "string"),
+			"order_date" => array("type" => "timestamp"),
+			"progress" => array("type" => "string"),
+			"receive_model_date" => array("type" => "timestamp"),
+			"person_in_charge" => array("type" => "string"),
+			"state" => array("type" => "string"),
+			"ship_date" => array("type" => "timestamp"),
+			"market_research_price" => array("type" => "double"),
+			"yahoo_produce" => array("type" => "string"), */
+			"accessory_remark" => array("type" => "string"),
+			/* "company_remark" => array("type" => "string"),
+			"produce_status" => array("type" => "string"),
+			"is_monopoly" => array("type" => "int"),
+			"create_date" => array("type" => "timestamp"), */
+	);
+	
+	public static function getProductByNoJp($no_jp) {
+		return ORM::factory('pmProductMaster')
+				->where('no_jp', '=', $no_jp)
+				->find();
+	}
+}

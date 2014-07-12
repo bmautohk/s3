@@ -1,0 +1,72 @@
+body#articles div.inactive {
+	display: none;
+}
+
+ol#toc {
+	/*background: #383838 url(tabs_bg.gif);*/
+	font-size: 10pt;
+	height: 40px;
+	/*left: -25px;*/
+	list-style: none;
+	/*min-width: 100%;*/
+	margin-bottom: 0px;
+	margin-left: 0px;
+	overflow: hidden;
+	/*padding: 0 60px 0 25px;*/
+	position: relative;
+	/*right: -85px;*/
+	width: auto;
+	padding-left: 0px;
+}
+
+ol#toc a {
+	background: #9b9b9b url(tabs.jpg);
+	color: #444;
+	display: block;
+	float: left;
+	height: 40px;
+	padding-left: 5px;
+	text-decoration: none;
+}
+
+ol#toc a:hover {
+	background-color: #d8d8d8;
+	background-position: 0 -73px;
+	color: #666;
+}
+
+ol#toc a:hover span {
+	background-position: 100% -73px;
+}
+
+ol#toc a:hover.active,
+ol#toc a.active {
+	background-color: #f8f8f8;
+	background-position: 0 -73px;
+	/* color: #222;
+	font-weight: bold; */
+}
+
+ol#toc a:hover.active span,
+ol#toc a.active span {
+	background-position: 100% -73px;
+}
+
+ol#toc li {
+	float: left;
+	/*margin: 0 3px 0 0;*/
+}
+
+ol#toc span {
+	background: url(tabs.jpg) 100% 0;
+	cursor: pointer;
+	display: block;
+	float: left;
+	line-height: 2em;
+	/*padding: .5em 5px 0 0;*/
+	padding: .5em 10px 0 5px;
+}
+
+.submenu {
+	background-color: f5c690;
+}
