@@ -306,15 +306,16 @@ class Model_Accountant_DeliveryNoteForm extends Model_PageForm {
 	private function backToPrevStep() {
 		$this->errors = array();
 		
-		if (sizeOf($this->selectedOrderReturnIds) > 0) {
+		/* if (sizeOf($this->selectedOrderReturnIds) > 0) {
 			$this->errors[] = '返品 can\'t be returned.';
 			return false;
-		}
+		} */
 		
 		$db = Database::instance();
 		$db->begin();
 		
 		try {
+			// Return order's products
 			foreach ($this->selectedContainerIds as $containerId) {
 				$container = new Model_Container($containerId);
 				
@@ -331,6 +332,13 @@ class Model_Accountant_DeliveryNoteForm extends Model_PageForm {
 					
 					$container->delete();
 				}
+			}
+			
+			// Return returned product
+			foreach ($this->selectedOrderReturnIds as $orderReturnId) {
+				$orderReturn = new Model_OrderReturn($orderReturnId);
+				$orderReturn->status = Model_OrderReturn::STATUS_INIT;
+				$orderReturn->save();
 			}
 		} catch (Exception $e) {
 			$db->rollback();
