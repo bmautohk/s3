@@ -33,7 +33,7 @@ class GlobalFunction {
 	 * @param unknown_type $rmb_to_usd_rate
 	 */
 	public static function convertRMB2USD($price, $rmb_to_usd_rate) {
-		return round($price * 1.0 / $rmb_to_usd_rate, 2);
+		return round($price * 1.0 * $rmb_to_usd_rate, 2);
 	}
 	
 	public static function roundJPY($price) {

@@ -98,7 +98,7 @@ class Model_Accountant_DeliveryNotePDFForm {
 		$db->commit();
 		
 		// Generate pdf
-		$this->genreatePDF2();
+		$this->genreatePDF();
 		
 		return true;
 		
@@ -345,7 +345,8 @@ class Model_Accountant_DeliveryNotePDFForm {
 		}
 	} */
 	
-	private function genreatePDF() {
+	// Obsoleted
+	private function genreatePDF_obsoleted() {
 		// create new PDF document
 		$pdf = new TCPDF('L', PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
 		
@@ -413,7 +414,7 @@ class Model_Accountant_DeliveryNotePDFForm {
 		$pdf->Output($deliveryNoteCreateDate.'_'.$this->deliveryNote->id.'.pdf', 'D');
 	}
 	
-	private function genreatePDF2() {
+	private function genreatePDF() {
 		// create new PDF document
 		$pdf = new Model_Accountant_DeliveryNotePDF('L', PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
 		$pdf->customer = $this->customer;
@@ -427,7 +428,7 @@ class Model_Accountant_DeliveryNotePDFForm {
 	
 		// set default header data
 		$pdf->setPrintHeader(true);
-		$pdf->setPrintFooter(false);
+		$pdf->setPrintFooter(true);
 	
 		// set header and footer fonts
 		$pdf->setHeaderFont(Array('cid0jp', '', PDF_FONT_SIZE_MAIN));
@@ -442,6 +443,7 @@ class Model_Accountant_DeliveryNotePDFForm {
 		 $pdf->SetHeaderMargin(PDF_MARGIN_HEADER);
 		$pdf->SetFooterMargin(PDF_MARGIN_FOOTER); */
 		$pdf->SetMargins(PDF_MARGIN_LEFT, 80, PDF_MARGIN_RIGHT);
+		$pdf->SetFooterMargin(PDF_MARGIN_FOOTER);
 		
 		// set font
 		//$pdf->SetFont('helvetica', '', 10);

@@ -18,7 +18,7 @@
 			<td><? echo Form::textarea('description', $shippingFee->description, array('rows'=>3)); ?></td>
 		</tr>
 		<tr>
-			<td>単価:</td>
+			<td>合計請求金額（税込・円）:</td>
 			<td>￥<? echo Form::input('amount', $shippingFee->amount); ?></td>
 		</tr>
 		<tr>

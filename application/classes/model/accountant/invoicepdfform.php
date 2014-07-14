@@ -375,7 +375,7 @@ class Model_Accountant_InvoicePDFForm {
 	
 		// set default header data
 		$pdf->setPrintHeader(true);
-		$pdf->setPrintFooter(false);
+		$pdf->setPrintFooter(true);
 		
 		// set header and footer fonts
 		$pdf->setHeaderFont(Array('cid0jp', '', PDF_FONT_SIZE_MAIN));
@@ -385,6 +385,7 @@ class Model_Accountant_InvoicePDFForm {
 		
 		// set margins
 		$pdf->SetMargins(PDF_MARGIN_LEFT, 80, PDF_MARGIN_RIGHT);
+		$pdf->SetFooterMargin(PDF_MARGIN_FOOTER);
 	
 		// set font
 		$pdf->SetFont('cid0jp', '', 10);

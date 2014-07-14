@@ -60,7 +60,7 @@ class Model_Sales_QuotationPDFForm {
 	
 	private function genreatePDF() {
 		// create new PDF document
-		$pdf = new TCPDF('L', PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
+		$pdf = new Model_Sales_QuotationPDF('L', PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
 		
 		// set document information
 		$pdf->SetCreator('S3');
@@ -70,10 +70,13 @@ class Model_Sales_QuotationPDFForm {
 		
 		// set default header data
 		$pdf->setPrintHeader(false);
-		$pdf->setPrintFooter(false);
+		$pdf->setPrintFooter(true);
 		
 		// set default monospaced font
 		$pdf->SetDefaultMonospacedFont(PDF_FONT_MONOSPACED);
+		
+		// set margins
+		$pdf->SetFooterMargin(PDF_MARGIN_FOOTER);
 		
 		// set font
 		$pdf->SetFont('cid0jp', '', 10);

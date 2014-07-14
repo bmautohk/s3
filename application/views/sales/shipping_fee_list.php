@@ -19,7 +19,7 @@ echo Form::hidden('action', 'search', array('id'=>'action'));
 			<td>Cust Code</td>
 			<td>品番</td>
 			<td>品目</td>
-			<td>単価 (￥)</td>
+			<td>合計請求金額（税込・円）</td>
 			<td>備考</td>
 		</tr>
 		<? foreach ($form->shippingFees as $shippingFee) { ?>
