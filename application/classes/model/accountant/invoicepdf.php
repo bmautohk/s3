@@ -10,25 +10,32 @@ class Model_Accountant_InvoicePDF extends TCPDF {
 	public function Header() {
 		// Address
 		$html = '';
+		
+		if (!empty($this->customer->postal_code)) {
+			$html .= $this->customer->postal_code.'';
+		}
 		if (!empty($this->customer->address1)) {
-			$html .= $this->customer->address1;
+			$html = empty($html) ? ' '.$this->customer->address1 : $html.'<br> '.$this->customer->address1;
 		}
 		if (!empty($this->customer->address2)) {
-			$html = empty($html) ? $this->customer->address2 : $html.'<br>'.$this->customer->address2;
+			$html = empty($html) ? ' '.$this->customer->address2 : $html.'<br> '.$this->customer->address2;
 		}
 		if (!empty($this->customer->address3)) {
-			$html = empty($html) ? $this->customer->address3 : $html.'<br>'.$this->customer->address3;
+			$html = empty($html) ? ' '.$this->customer->address3 : $html.'<br> '.$this->customer->address3;
 		}
 		
 		if (!empty($html)) {
-			$html .= '<br>';
+			$html = '<span style="font-size:12pt"> '.$html.'</span><br><br>';
 		}
 		
-		$html .= '<span style="font-weight:bold;font-size:18pt">'.$this->customer->name.' 御中</span>';
-		$this->writeHTMLCell(100, 40, 25, 12, $html, 1, 0, 0, true, '', true);
+		$html .= '<span style="font-size:12pt"> '.$this->customer->name.' 御中</span><br><br>';
+		
+		$html .= '<span style="font-size:12pt"> TEL '.$this->customer->tel.' </span><br>';
+		
+		$this->writeHTMLCell(90, 40, 16, 12, $html, 1, 0, 0, true, '', true);
 		
 		$html = '<h1>請求書</h1>';
-		$this->writeHTMLCell(0, 0, 160, 12, $html, 0, 1, 0, true, '', true);
+		$this->writeHTMLCell(0, 0, 140, 12, $html, 0, 1, 0, true, '', true);
 		
 		// Date
 		//$html = '請求日'.date('Y/m/d');
