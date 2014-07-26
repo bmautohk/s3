@@ -48,6 +48,7 @@ class Model_Accountant_InvoicePDFForm {
 				$container = ORM::factory('container')
 							->join('delivery_note_detail')->on('container.id', '=', 'delivery_note_detail.container_id')
 							->where('delivery_note_detail.id', '=', $invoiceDetail->delivery_note_detail_id)
+							->select('delivery_note_detail.remark')
 							->find();
 				
 				if ($container->source != Model_Container::SOURCE_GIFT) {
@@ -69,6 +70,7 @@ class Model_Accountant_InvoicePDFForm {
 					if ($container->container_no != '') {
 						$product->remark .= '<br />櫃號: '.$container->container_no;
 					}
+					$product->remark .= '<br />'.$container->remark;
 				}/*  else {
 					// Gift
 					$gift = new Model_Gift($container->gift_id);
@@ -113,12 +115,14 @@ class Model_Accountant_InvoicePDFForm {
 				$product->market_price_rmb = $invoiceDetail->market_price_rmb;
 				$product->total = $invoiceDetail->total;
 				$product->total_rmb = GlobalFunction::roundUpTo($invoiceDetail->total * 1.0 / $this->invoice->rmb_to_jpy_rate, 2);
+				$product->remark = $deliveryNoteDetail->remark;
 			} else {
 				$product->description = $invoiceDetail->description;
 				$product->qty = '';
 				$product->market_price = '';
 				$product->market_price_rmb = '';
 				$product->total = $invoiceDetail->market_price;
+				$product->remark = '';
 				
 				if ($invoiceDetail->market_price_rmb != 0) {
 					$product->total_rmb = $invoiceDetail->market_price_rmb;

@@ -1,4 +1,6 @@
 <?
+$hasWrite = GlobalFunction::hasPrivilege('accountant_invoice', Model_RoleMatrix::PERMISSION_WRITE);
+
 $customerOptions = Model_Customer::getOptions(); 
 ?>
 
@@ -31,7 +33,7 @@ $customerOptions = Model_Customer::getOptions();
 	</tr>
 </table>
 
-<input type="submit" value="scan"><br>
+<input type="submit" value="scan" <?=!$hasWrite ? 'disabled="disabled"' : '' ?> /><br>
 <? echo Form::close(); ?>
 				
 <div>when accountant click scan all container lv item will group to the invoice and displayed as below</div>

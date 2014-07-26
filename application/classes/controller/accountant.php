@@ -50,6 +50,8 @@ class Controller_Accountant extends Controller_CustomTemplate {
 			}
 		} else if ($form->action == 'return') {
 			// Return delivery note
+			$this->checkPrivilege('accountant_delivery_note', Model_RoleMatrix::PERMISSION_WRITE);
+			
 			if ($form->processReturnAction()) {
 				$this->template->set('success', '納品書 ['.$form->return_delivery_note_no.'] is returned successfully.');
 			} else {
@@ -57,6 +59,8 @@ class Controller_Accountant extends Controller_CustomTemplate {
 			}
 		} else if ($form->action == 'back_to_prev_step') {
 			// Back to warehouse / auditor
+			$this->checkPrivilege('accountant_delivery_note', Model_RoleMatrix::PERMISSION_WRITE);
+			
 			if ($form->processBackToPrevStepAction()) {
 				$this->template->set('success', 'The selected items are returned successfully.');
 			} else {

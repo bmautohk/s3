@@ -1,4 +1,6 @@
-<? $isEnableReturn = Kohana::$environment == Kohana::DEVELOPMENT; ?>
+<? $isEnableReturn = Kohana::$environment == Kohana::DEVELOPMENT; 
+$hasWrite = GlobalFunction::hasPrivilege('accountant_delivery_note', Model_RoleMatrix::PERMISSION_WRITE);
+?>
 
 <? echo Form::open("accountant/delivery_note", array('id'=>'form1')); ?>
 <? echo Form::hidden('action', 'scan', array('id'=>'action'));
@@ -43,8 +45,8 @@ echo Form::hidden('delivery_note_id', '', array('id'=>'delivery_note_id'));
 		</tr>
 	<? } ?>
 </table>
-<input type="submit" value="Scan" <?=$form->customer_id == 0 ? 'disabled="disabled"' : '' ?> />
-<input type="button" value="Return" onclick="javascript:backToPrevStep()"/>
+<input type="submit" value="Scan" <?=$form->customer_id == 0 || !$hasWrite ? 'disabled="disabled"' : '' ?> />
+<input type="button" value="Return" onclick="javascript:backToPrevStep()" <?=!$hasWrite ? 'disabled="disabled"' : '' ?> />
 
 <br />
 
