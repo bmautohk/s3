@@ -177,9 +177,9 @@ class Model_Sales_OrderForm {
 				}
 				
 				$kaito = $product != NULL ? $product->kaito : 0;
-				if ($this->order->order_type_id == Model_OrderType::ID_CLAIM || $this->order->order_type_id == Model_OrderType::ID_SAMPLE) {
+				/* if ($this->order->order_type_id == Model_OrderType::ID_CLAIM || $this->order->order_type_id == Model_OrderType::ID_SAMPLE) {
 					$kaito = 0;
-				}
+				} */
 			} else {
 				$kaito = $this->tempProductMasters[$idx]->kaito;
 			}
@@ -442,7 +442,12 @@ class Model_Sales_OrderForm {
 			$orderProduct->profit = $productProfit;
 			
 			if ($productProfit < 0) {
-				$isValid = false;
+				if ($this->order->order_type_id != Model_OrderType::ID_KAITO
+						&& $this->order->order_type_id != Model_OrderType::ID_CLAIM
+						&& $this->order->order_type_id != Model_OrderType::ID_SAMPLE
+						&& $this->order->order_type_id != Model_OrderType::ID_STOCK) {
+					$isValid = false;
+				}
 			}
 		}
 		
@@ -677,7 +682,7 @@ class Model_Sales_OrderForm {
 					$B = $profitConfigs['H'];
 				}
 			}
-		} else if ($orderTypeId == Model_OrderType::ID_RETAIL) {
+		} else if ($orderTypeId == Model_OrderType::ID_RETAIL || $orderTypeId == Model_OrderType::ID_TEMP) {
 			if ($orderProduct->is_tax == 1) {
 				// 税 = 込
 			if ($orderProduct->is_shipping_fee == 1) {

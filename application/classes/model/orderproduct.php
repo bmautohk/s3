@@ -192,7 +192,7 @@ class Model_OrderProduct extends ORM {
 	}
 	
 	public function isEnableCancel() {
-		return $this->factory_status == Model_OrderProduct::STATUS_SALES && $this->jp_status >= Model_OrderProduct::STATUS_SALES;
+		return $this->factory_status == Model_OrderProduct::STATUS_SALES && $this->jp_status == Model_OrderProduct::STATUS_SALES;
 	}
 	
 	public function getSubTotalWithDifferentCurrency($rmb_to_jpy_rate, $rmb_to_usd_rate, $tax_rate) {

@@ -10,6 +10,7 @@ class Model_OrderType extends ORM {
 	const ID_MONOPOLY = 5; // 專賣品
 	const ID_MONOPOLY_RETAIL = 6; // 専売零售
 	const ID_KAITO = 7; // Kaito
+	const ID_STOCK = 8; // 在庫処分
 	const ID_TEMP = 9; // 一次性訂單
 	
 	protected $_table_columns = array(
