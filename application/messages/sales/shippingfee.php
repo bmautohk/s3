@@ -3,7 +3,7 @@ return array
 (
 	'amount' => array (
 			'not_empty' => '輸入經費  must not be empty.',
-			'numeric' => '輸入經費 must be numeric.',
+			'digit' => '合計請求金額 must be integer.',
 			'CustomValidation::positive' => '輸入經費 must be lager than 0.',
 	),
 	'fee' => array (

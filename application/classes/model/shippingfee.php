@@ -13,7 +13,7 @@ class Model_ShippingFee extends ORM {
 			"customer_id" => array("type" => "int"),
 			"container_no" => array("type" => "string"),
 			"description" => array("type" => "string"),
-			"amount" => array("type" => "double"),
+			"amount" => array("type" => "integer"),
 			"remark" => array("type" => "string"),
 			"status" => array("type" => "int"),
 			"shipping_fee_delivery_note_id" => array("type" => "int"),
@@ -28,7 +28,7 @@ class Model_ShippingFee extends ORM {
 				),
 				'amount' => array(
 						array('not_empty'),
-						array('numeric'),
+						array('digit'),
 						array('CustomValidation::positive')
 				),
 		);

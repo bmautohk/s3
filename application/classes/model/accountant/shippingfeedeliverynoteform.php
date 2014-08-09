@@ -5,6 +5,8 @@ class Model_Accountant_ShippingFeeDeliveryNoteForm extends Model_PageForm {
 	public $customer_id;
 	
 	public $shippingFeeDeliveryNotes;
+	
+	public $pendingShippingFees;
 
 	public $errors;
 	
@@ -18,13 +20,15 @@ class Model_Accountant_ShippingFeeDeliveryNoteForm extends Model_PageForm {
 	}
 	
 	public function processSearchAction() {
-		if ($this->customer_id == NULL) {
+		/* if ($this->customer_id == NULL) {
 			$customer = ORM::factory('customer')->order_by('cust_code')->find();
 			$this->customer_id = $customer->id;
 			//$this->customer_id = 0;
-		}
+		} */
 		
 		$this->shippingFeeDeliveryNotes = $this->search();
+		
+		$this->getPendingShippingFees();
 	}
 	
 	public function processScanAction() {
@@ -115,10 +119,8 @@ class Model_Accountant_ShippingFeeDeliveryNoteForm extends Model_PageForm {
 			 */
 			$deliveryNote->total_amt = $total_amt;
 			$deliveryNote->save();
-			
 		} catch (Exception $e) {
 			$db->rollback();
-			$db2->rollback();
 			$this->errors[] = $e->getMessage();
 			return false;
 		}
@@ -126,6 +128,21 @@ class Model_Accountant_ShippingFeeDeliveryNoteForm extends Model_PageForm {
 		$db->commit();
 		
 		return true;
+	}
+	
+	private function getPendingShippingFees() {
+		// Find shipping fee by customer
+		$orm = ORM::factory('shippingFee')
+				->with('customer')
+				->where('status', '=', Model_ShippingFee::STATUS_INIT)
+				->select('customer.cust_code')
+				->order_by('create_date', 'desc');
+		
+		if (!empty($this->customer_id)) {
+			$orm->where('customer_id', '=', $this->customer_id);
+		}
+		
+		$this->pendingShippingFees = $orm->find_all();
 	}
 
 // Overrided function

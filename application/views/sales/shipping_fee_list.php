@@ -12,7 +12,7 @@ echo Form::hidden('action', 'search', array('id'=>'action'));
 	<? } ?>
 <? echo Form::close(); ?>
 
-<div style="width:400px">
+<div style="width:600px">
 <? echo $form->pager(); ?>
 	<table border="1">
 		<tr>
@@ -27,7 +27,7 @@ echo Form::hidden('action', 'search', array('id'=>'action'));
 			<td><?=$shippingFee->cust_code ?></td>
 			<td><?=$shippingFee->container_no ?></td>
 			<td><?=$shippingFee->description ?></td>
-			<td><?=$shippingFee->amount ?></td>
+			<td><?=GlobalFunction::displayJPYNumber($shippingFee->amount) ?></td>
 			<td><?=$shippingFee->remark ?></td>
 		</tr>
 		<? } ?>

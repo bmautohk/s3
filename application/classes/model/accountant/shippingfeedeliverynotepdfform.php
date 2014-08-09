@@ -97,7 +97,7 @@ class Model_Accountant_ShippingFeeDeliveryNotePDFForm {
 		
 		$pdf->AddPage();
 		
-		$html = '<div style="width:100%;text-align:left;background-color:rgb(188, 208, 241);color:white;font-size:20pt">御請求書</div>';
+		$html = '<div style="width:100%;text-align:left;background-color:rgb(188, 208, 241);color:black;font-size:20pt">御請求書</div>';
 		$pdf->writeHTMLCell(0, 0, '', '', $html, 0, 1, 0, true, '', true);
 		
 		/** Date */
@@ -107,12 +107,12 @@ class Model_Accountant_ShippingFeeDeliveryNotePDFForm {
 		/** Customer Name */
 		//$html = '<div style="font-size:15px">'.$this->customer->name.' 様</div><br /><div style="font-size:8px">大変お世話になっております。</div>';
 		$html = '<div style="font-size:15px">'.$this->customer->name.' 様</div>';
-		$pdf->writeHTMLCell(100, 10, 10, 20, $html, 0, 1, 0, true, '', true);
+		$pdf->writeHTMLCell(180, 10, 10, 20, $html, 0, 1, 0, true, '', true);
 		$html = '<div style="font-size:8px">大変お世話になっております。</div>';
 		$pdf->writeHTMLCell(100, 10, 10, 27, $html, 0, 1, 0, true, '', true);
 		
 		/** Total */
-		$html = '税込請求金額 '.$this->total.'円<br />件　　名： コンテナ輸入経費の件<br />■納品予定日：&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;■納品場所：';
+		$html = '税込請求金額 '.GlobalFunction::displayJPYNumber($this->total).'円';
 		$pdf->writeHTMLCell(100, 10, 10, 35, $html, 0, 1, 0, true, '', true);
 		
 		/** Office Address */

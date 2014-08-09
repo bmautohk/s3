@@ -1,13 +1,37 @@
+<? $hasWrite = GlobalFunction::hasPrivilege('accountant_shipping_fee_delivery_note', Model_RoleMatrix::PERMISSION_WRITE); ?>
+
 <? echo Form::open("accountant/shipping_fee_delivery_note", array('id'=>'form1')); ?>
 <? echo Form::hidden('action', 'scan', array('id'=>'action')); ?>
 <table>
 	<tr>
 		<td>Cust Code:</td>
-		<td><? echo Form::select('customer_id', Model_Customer::getOptions(), $form->customer_id, array('onchange'=>'customerChange()')); ?></td>
+		<td><? echo Form::select('customer_id', Model_Customer::getOptions(true), $form->customer_id, array('onchange'=>'customerChange()')); ?></td>
 	</tr>
 </table>
-<input type="submit" value="Scan" />
+<input type="submit" value="Scan" <?=$form->customer_id == 0 || !$hasWrite ? 'disabled="disabled"' : '' ?> />
 <? echo Form::close(); ?>
+
+Pending for creating 請求書:<br>
+<table border="1">
+	<tr>
+		<td>Cust Code</td>
+		<td>品番</td>
+		<td>品目</td>
+		<td>合計請求金額（税込・円）</td>
+		<td>備考</td>
+	</tr>
+	<? foreach ($form->pendingShippingFees as $shippingFee) { ?>
+	<tr>
+		<td><?=$shippingFee->cust_code ?></td>
+		<td><?=$shippingFee->container_no ?></td>
+		<td><?=$shippingFee->description ?></td>
+		<td><?=GlobalFunction::displayJPYNumber($shippingFee->amount) ?></td>
+		<td><?=$shippingFee->remark ?></td>
+	</tr>
+	<? } ?>
+</table>
+
+<br />
 
 <? if (isset($form->shippingFeeDeliveryNotes)) { ?>
 <div style="width:600px">

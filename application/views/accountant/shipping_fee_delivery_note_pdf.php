@@ -11,7 +11,7 @@
 		background-color: rgb(188, 208, 241);
 		border-style: solid;
 		border-width: 0px 0px 0px 1px;
-		color: white;
+		color: black;
 		border-color: black rgb(188, 208, 241) black rgb(188, 208, 241);
 	}
 
@@ -60,24 +60,14 @@
 			<td class="detail"><?=$shippingFee->container_no ?></td>
 			<td class="detail"><?=$shippingFee->description ?></td>
 			<td class="detail">1</td>
-			<td class="detail number"><?=$shippingFee->amount ?></td>
-			<td class="detail number"><?=$shippingFee->amount ?></td>
+			<td class="detail number"><?=GlobalFunction::displayJPYNumber($shippingFee->amount) ?></td>
+			<td class="detail number"><?=GlobalFunction::displayJPYNumber($shippingFee->amount) ?></td>
 			<td class="detail"><?=$shippingFee->remark ?></td>
 		</tr>
 	<? } ?>
 	<tr>
-		<td colspan="4" class="total1">合計</td>
-		<td class="total1 number"><?=$form->total ?></td>
-		<td class="total1"></td>
-	</tr>
-	<tr>
-		<td colspan="4" class="total1"></td>
-		<td class="total1 number"><?=$form->total ?></td>
-		<td class="total1"></td>
-	</tr>
-	<tr>
 		<td colspan="4" class="total2">税込み合計額</td>
-		<td class="total2 number"><?=$form->total ?>円</td>
+		<td class="total2 number"><?=GlobalFunction::displayJPYNumber($form->total) ?>円</td>
 		<td class="total2"></td>
 	</tr>
 </table>
