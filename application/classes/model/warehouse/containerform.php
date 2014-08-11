@@ -113,6 +113,11 @@ class Model_Warehouse_ContainerForm {
 			$container->status = Model_Container::STATUS_READY_FOR_DELIVERY_NOTE;
 			$container->save();
 			
+			// Refresh the flag "has_container_to_accountant"
+			$orderProduct = new Model_OrderProduct($container->order_product_id);
+			$orderProduct->refreshHasContainerToAccountant();
+			$orderProduct->save();
+			
 		} catch (Exception $e) {
 			$db->rollback();
 			$this->errors[] = $e->getMessage();

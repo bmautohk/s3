@@ -102,7 +102,7 @@ $orderOption = Model_Warehouse_SearchForm::getOrderOptions();
 			<? } ?>
 		</td>
 		<td>
-			<? if ($orderProduct->factory_status < Model_OrderProduct::STATUS_DELIVERY_NOTE_GENERATED) { ?>
+			<? if ($orderProduct->has_container_to_accountant == 'Y') { ?>
 				<input type="button" value="納品書" onclick="location.href='<?=URL::site('warehouse/container_list/'.$orderProduct->id) ?>'" />
 			<? } ?>
 		</td>

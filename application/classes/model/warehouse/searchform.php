@@ -171,6 +171,7 @@ class Model_Warehouse_SearchForm extends Model_PageForm {
 				->select(array('delivery_method.description', 'delivery_method_description'))
 				->select('order.delivery_method')
 				->select(array('order_type.description', 'order_type_description'))
+				->order_by('has_container_to_accountant', 'desc')
 				->limit($limit)
 				->offset($offset);
 		

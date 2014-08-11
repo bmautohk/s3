@@ -66,6 +66,7 @@ class Model_OrderProduct extends ORM {
 			"jp_status" => array("type" => "string"),
 			"factory_status" => array("type" => "string"),
 			"is_reject" => array("type" => "string"),
+			"has_container_to_accountant" => array("type" => "string"),
 			"translator_first_update_date" => array("type" => "date"),
 			"translator_last_update_date" => array("type" => "date"),
 	);
@@ -264,5 +265,15 @@ class Model_OrderProduct extends ORM {
 	
 	public function isEnableReturn() {
 		return $this->factory_status != 99 && $this->warehouse_borrow_qty > $this->warehouse_return_qty;
+	}
+	
+	public function refreshHasContainerToAccountant() {
+		$result = DB::select(array(DB::expr('COUNT(container.id)'), 'count'))
+				->from('container')
+				->where('order_product_id', '=', $this->id)
+				->where('status', '=', Model_Container::STATUS_INIT)
+				->execute();
+		
+		$this->has_container_to_accountant = $result[0]['count'] > 0 ? 'Y' : 'N';
 	}
 }

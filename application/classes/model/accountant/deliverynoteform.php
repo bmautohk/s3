@@ -323,6 +323,11 @@ class Model_Accountant_DeliveryNoteForm extends Model_PageForm {
 					// Back to warehouse
 					$container->status = Model_Container::STATUS_INIT;
 					$container->save();
+					
+					// Refresh the flag "has_container_to_accountant"
+					$orderProduct = new Model_OrderProduct($container->order_product_id);
+					$orderProduct->refreshHasContainerToAccountant();
+					$orderProduct->save();
 				} else if ($container->source == Model_Container::SOURCE_JP) {
 					// Back to auditor
 					$orderProduct = new Model_OrderProduct($container->order_product_id);

@@ -209,6 +209,9 @@ class Model_Factory_ShippingForm {
 				$orderProduct->factory_status = Model_OrderProduct::STATUS_WAREHOUSE;
 			}
 			
+			// Has container ready to deliver to accountant
+			$orderProduct->has_container_to_accountant = 'Y';
+			
 			// Update DB
 			$container->save();
 			$orderProduct->save();
