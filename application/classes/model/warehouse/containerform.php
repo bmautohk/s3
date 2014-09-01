@@ -39,6 +39,18 @@ class Model_Warehouse_ContainerForm {
 		return $result;
 	}
 	
+	public function returnToFactoryAction($container_id) {
+		$this->container_id = $container_id;
+		$result = $this->returnToFactory();
+	
+		// Refresh container list
+		$container = new Model_Container($this->container_id);
+		$this->order_product_id = $container->order_product_id;
+		$this->search();
+	
+		return $result;
+	}
+	
 	public function initContainerReturnAction($container_id) {
 		$this->container_id = $container_id;
 		$this->container_return_init();
@@ -126,6 +138,71 @@ class Model_Warehouse_ContainerForm {
 		
 		$db->commit();
 		
+		return true;
+	}
+	
+	private function returnToFactory() {
+		$db = Database::instance();
+		$db->begin();
+	
+		$this->errors = array();
+	
+		try {
+			// Validation
+			// 返品 exist -> Not allow to return back to factory
+			$result = DB::select(array(DB::expr('COUNT(id)'), 'count'))
+						->from('container_return')
+						->where('container_id', '=', $this->container_id)
+						->execute();
+			$noOfReturn = $result[0]['count'];
+			if ($noOfReturn > 0) {
+				$this->errors[] = '返品 has already created. You are not allowed to return to 工場.';
+				return false;
+			}
+			
+			// Update container
+			$container = new Model_Container($this->container_id);
+			$container->status = Model_Container::STATUS_DRAFT;
+			$container->last_updated_by = Auth::instance()->get_user()->username;
+			$container->save();
+			
+			// Update order product
+			$orderProduct = new Model_OrderProduct($container->order_product_id);
+			$orderProduct->factory_delivery_qty = $orderProduct->factory_delivery_qty - $container->delivery_qty;
+			$orderProduct->factory_entry_qty = 	$orderProduct->factory_entry_qty + $container->delivery_qty;
+			$orderProduct->propose_delivery_date = $container->delivery_date;
+			
+			// Update order product's status
+			$result = DB::select(array(DB::expr('COUNT(id)'), 'count'))
+					->from('container')
+					->where('order_product_id', '=', $container->order_product_id)
+					->where('status', '>=', Model_Container::STATUS_INIT)
+					->execute();
+			$noOfContainer = $result[0]['count'];
+			
+			if ($noOfContainer == 0) {
+				$orderProduct->factory_status = Model_OrderProduct::STATUS_FACTORY;
+			}
+				
+			// Refresh the flag "has_container_to_accountant"
+			$orderProduct->refreshHasContainerToAccountant();
+			
+			$orderProduct->save();
+			
+			// Update order's status
+			$orderProduct->order->updateStatus();
+			
+			// Update container summary
+			Model_ContainerSummary::createSummary($this->order_product_id);
+			
+		} catch (Exception $e) {
+			$db->rollback();
+			$this->errors[] = $e->getMessage();
+			return false;
+		}
+	
+		$db->commit();
+	
 		return true;
 	}
 	

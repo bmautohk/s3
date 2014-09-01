@@ -1,6 +1,7 @@
 <table border="1">
 	<tr> 
 		<td>交到入金管理員做納品書</td>
+		<td>退回工場</td>
 		<td>返品</td>
 		<td>Order No.</td>
 		<td>Cust Code</td>
@@ -21,6 +22,11 @@
 		<td>
 			<? if ($container->status == Model_Container::STATUS_INIT) { ?>
 				<input type="button" value="納品書" onclick="location.href='<?=URL::site('warehouse/add_delivery_note/'.$container->id) ?>'" />
+			<? } ?>
+		</td>
+		<td>
+			<? if ($container->status == Model_Container::STATUS_INIT) { ?>
+				<input type="button" value="退回工場" onclick="location.href='<?=URL::site('warehouse/return_to_factory/'.$container->id) ?>'" />
 			<? } ?>
 		</td>
 		<td>

@@ -13,6 +13,7 @@ class Model_Accountant_DepositSettlementForm extends Model_PageForm {
 	public $depositSettle;
 	public $depositSettleHistory;
 	public $errors;
+	public $successMsg;
 	
 	public $page_url = 'accountant/deposit_settlement';
 	
@@ -80,6 +81,7 @@ class Model_Accountant_DepositSettlementForm extends Model_PageForm {
 	
 	private function confirm() {
 		$this->errors = array();
+		$this->successMsg = NULL;
 		
 		$db = Database::instance();
 		$db->begin();
@@ -95,15 +97,29 @@ class Model_Accountant_DepositSettlementForm extends Model_PageForm {
 				return false;
 			}
 			
+			// Update status
+			$depositSettle->is_confirm = Model_DepositSettle::CONFIRM_YES;
+			$depositSettle->accountant_remark = $this->remark;
+			$depositSettle->save();
+			
 			// Updated order's confirmed deposit amount
 			$order = new Model_Order($depositSettle->order_id);
 			$order->confirm_deposit_amt += $depositSettle->settle_amt + $depositSettle->fee;
 			$order->save();
 			
-			// Update status
-			$depositSettle->is_confirm = Model_DepositSettle::CONFIRM_YES;
-			$depositSettle->accountant_remark = $this->remark;
-			$depositSettle->save();
+			// Pass order from sales to kaito staff
+			if ($order->confirm_deposit_amt >= $order->deposit_amt) {
+				DB::update(ORM::factory('orderProduct')->table_name())
+					->set(array('jp_status' => Model_OrderProduct::STATUS_KAITOSTAFF))
+					->set(array('factory_status' => Model_OrderProduct::STATUS_KAITOSTAFF))
+					->set(array('is_reject' => Model_OrderProduct::IS_REJECT_NO))
+					->where('order_id', '=', $depositSettle->order_id)
+					->where('jp_status', '=', Model_OrderProduct::STATUS_SALES)
+					->where('factory_status', '=', Model_OrderProduct::STATUS_SALES)
+					->execute();
+				
+				$this->successMsg = 'Order ['.$depositSettle->order_id.'] has been submitted to 大步哥.';
+			}
 			
 		} catch (Exception $e) {
 			$db->rollback();

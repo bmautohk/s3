@@ -146,6 +146,27 @@ class Controller_Warehouse extends Controller_CustomTemplate {
 		$this->template->set('submenu', 'list');
 	}
 	
+	public function action_return_to_factory() {
+		$this->checkPrivilege('warehouse_list', Model_RoleMatrix::PERMISSION_WRITE);
+	
+		$container_id = $this->request->param('id');
+	
+		$form = new Model_Warehouse_ContainerForm();
+		$form->populate($_POST);
+	
+		if ($form->returnToFactoryAction($container_id)) {
+			$this->template->set('success', 'The item is returned to 工場 successfully.');
+		} else {
+			$this->template->set('errors', $form->errors);
+		}
+	
+		// Display
+		$view = View::factory('warehouse/container_list');
+		$view->set('form', $form);
+		$this->template->set('content', $view);
+		$this->template->set('submenu', 'list');
+	}
+	
 /* ***************************************************************************************************************
  * Borrow Product 
  ****************************************************************************************************************/

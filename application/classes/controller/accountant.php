@@ -244,7 +244,11 @@ class Controller_Accountant extends Controller_CustomTemplate {
 			
 			if ($form->action == 'confirm') {
 				if ($form->processConfirmAction()) {
-					$this->template->set('success', 'The deposit is confirmed.');
+					$successMsg = 'The deposit is confirmed.';
+					if ($form->successMsg != NULL) {
+						$successMsg .= '<br />'.$form->successMsg;
+					}
+					$this->template->set('success', $successMsg);
 				} else {
 					$this->template->set('errors', $form->errors);
 				}
