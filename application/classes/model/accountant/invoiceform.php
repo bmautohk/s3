@@ -224,20 +224,6 @@ class Model_Accountant_InvoiceForm extends Model_PageForm {
 					}
 				}
 				
-				/** 
-				 * Add tax item
-				 */
-				$invoiceDetail = new Model_InvoiceDetail();
-				$invoiceDetail->delivery_note_detail_id = 0;
-				$invoiceDetail->product_cd = '';
-				$invoiceDetail->description = '';
-				$invoiceDetail->qty = 0;
-				$invoiceDetail->market_price_rmb = 0;
-				$invoiceDetail->market_price = 0;
-				$invoiceDetail->total = $totalTax;
-				$invoiceDetail->source = Model_InvoiceDetail::SOURCE_TAX;
-				$invoiceDetails[] = $invoiceDetail;
-				
 				// Format tax value
 				//$totalTax = ceil($totalTax);
 				
@@ -265,6 +251,20 @@ class Model_Accountant_InvoiceForm extends Model_PageForm {
 					$invoiceExtraDetails[] = $invoiceExtraDetail;
 				} */
 			}
+			
+			/**
+			 * Add tax item
+			 */
+			$invoiceDetail = new Model_InvoiceDetail();
+			$invoiceDetail->delivery_note_detail_id = 0;
+			$invoiceDetail->product_cd = '';
+			$invoiceDetail->description = '';
+			$invoiceDetail->qty = 0;
+			$invoiceDetail->market_price_rmb = 0;
+			$invoiceDetail->market_price = 0;
+			$invoiceDetail->total = $totalTax;
+			$invoiceDetail->source = Model_InvoiceDetail::SOURCE_TAX;
+			$invoiceDetails[] = $invoiceDetail;
 			
 			/**
 			 * Deposit
