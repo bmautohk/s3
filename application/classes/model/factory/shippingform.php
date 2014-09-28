@@ -256,6 +256,7 @@ class Model_Factory_ShippingForm {
 		$orderProduct->factory_remark = $this->factory_remark;
 		$orderProduct->factory_status = Model_OrderProduct::STATUS_TRANSLATOR;
 		$orderProduct->is_reject = Model_OrderProduct::IS_REJECT_YES;
+		$orderProduct->factory_to_translator_date = DB::expr('current_date');
 		
 		$orderProduct->save();
 		

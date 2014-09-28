@@ -69,6 +69,7 @@ class Model_OrderProduct extends ORM {
 			"has_container_to_accountant" => array("type" => "string"),
 			"translator_first_update_date" => array("type" => "date"),
 			"translator_last_update_date" => array("type" => "date"),
+			"factory_to_translator_date" => array("type" => "date"),
 	);
 	
 	public function rules() {

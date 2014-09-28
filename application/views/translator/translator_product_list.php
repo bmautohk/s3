@@ -114,6 +114,7 @@
 			<td>Auditor Remark</td>
 			<td>高原 Remark</td>
 			<td>Void Remark</td>
+			<td>工場退単日期</td>
 			<td>pm 設定了的供應商</td>
 			<td>発送方法</td>
 			<td>picture1</td>
@@ -167,6 +168,7 @@
 					<td><?=$orderProduct->factory_auditor_remark ?></td>
 					<td><? echo Form::textarea('orderProducts['.$idx.'][translator_remark]', $orderProduct->translator_remark, array('rows'=>2, 'cols'=>30, !$isEnable? 'disabled' : '')); ?></td>
 					<td><?=$orderProduct->factory_remark ?></td>
+					<td><?=$orderProduct->factory_to_translator_date ?></td>
 					<td><?=$orderProduct->supplier ?></td>
 					<td>
 						<? if ($isEnable) { ?>
