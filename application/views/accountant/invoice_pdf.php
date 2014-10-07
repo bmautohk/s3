@@ -23,8 +23,8 @@ $invoice = $form->invoice;
 		<td class="detail">御入金額</td>
 		<td class="detail">繰越金額</td>
 		<td class="detail">今回御買上額</td>
-		<td class="detail">消費稅</td>
-		<td class="detail">源泉徵收稅額</td>
+		<td class="detail">消費税</td>
+		<td class="detail">源泉徵收税額</td>
 		<td class="detail">今回請求金額</td>
 	</tr>
 	<tr>
