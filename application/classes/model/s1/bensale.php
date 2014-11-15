@@ -26,6 +26,7 @@ class Model_S1_BenSale extends ORM {
 	
 	const SALE_CHK_REF_YAHOO = 0;
 	const SALE_CHK_REF_AUTO = 1;
+	const SALE_CHK_REF_S3 = 2;
 	
 	public function rules() {
 		return array(

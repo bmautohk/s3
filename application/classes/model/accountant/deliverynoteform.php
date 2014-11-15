@@ -742,10 +742,27 @@ class Model_Accountant_DeliveryNoteForm extends Model_PageForm {
 	private function getNextSaleRef() {
 		$result = DB::select(array(DB::expr('max(sale_ref)'), 'max'))
 					->from('ben_sale')
-					->where('sale_chk_ref', '=', Model_S1_BenSale::SALE_CHK_REF_AUTO)
+					->where('sale_chk_ref', '=', Model_S1_BenSale::SALE_CHK_REF_S3)
+					->where('sale_ref', 'like', 's3-%')
 					->execute('s1');
 		
-		return $result[0]['max'] + 1;
+		if (sizeOf($result) > 0) {
+			$maxSeq = intval(substr($result[0]['max'], 3)); // format: s3-XXXX
+		} else {
+			$maxSeq = 0;
+		}
+		
+		do {
+			$maxSeq++;
+			$newSaleRef = 's3-'.$maxSeq;
+			
+			$result = DB::select(array(DB::expr('count(sale_ref)'), 'count'))
+						->from('ben_sale')
+						->where('sale_ref', '=', $newSaleRef)
+						->execute('s1');
+		} while ($result[0]['count'] > 0);
+			
+		return $newSaleRef;
 	}
 	
 	private function createS1Order($customer, $containers, $rmb_to_jpy_rate, $deliveryNote) {
@@ -771,7 +788,7 @@ class Model_Accountant_DeliveryNoteForm extends Model_PageForm {
 		$sale->sale_group = Model_Accountant_DeliveryNoteForm::S1_SALES;
 		$sale->sale_yahoo_id = $customer->cust_code.'-'.$deliveryNote->delivery_note_no;
 		$sale->sale_dat = DB::expr('current_date');
-		$sale->sale_chk_ref = Model_S1_BenSale::SALE_CHK_REF_AUTO;
+		$sale->sale_chk_ref = Model_S1_BenSale::SALE_CHK_REF_S3;
 		$sale->sale_discount = 0;
 		$sale->sale_tax = 0;
 		$sale->s3_delivery_note_no = $deliveryNote->delivery_note_no;
