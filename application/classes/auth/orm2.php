@@ -17,10 +17,16 @@ class Auth_ORM2 extends Kohana_Auth_ORM {
 		$user->last_login_date = DB::expr('CURRENT_TIMESTAMP');
 		$user->update();
 		
+		// Get role
+		$role = ORM::factory('role')
+				->where('role_code', '=', $user->role_code)
+				->find();
+				
 		// Finish the login
 		$authUser = new Model_Auth_User();
 		$authUser->username = $user->username;
 		$authUser->role_code = $user->role_code;
+		$authUser->is_sales = $role->is_sales;
 		$this->complete_login($authUser);
 		
 		return TRUE;

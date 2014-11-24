@@ -10,7 +10,8 @@ class Model_Role extends ORM {
 	
 	protected $_table_columns = array(
 			"role_code" => array("type" => "string"),
-			"role_name" => array("type" => "string")
+			"role_name" => array("type" => "string"),
+			"is_sales" => array("type" => "string")
 	);
 	
 	public function rules() {

@@ -2,6 +2,7 @@
 class Model_Auth_User {
 	public $username;
 	public $role_code;
+	public $is_sales;
 	public $privilegePages;
 	
 	public $mainMenu;
@@ -47,6 +48,6 @@ class Model_Auth_User {
 	}
 	
 	public function isSales() {
-		return $this->role_code == Model_Role::ROLE_CODE_SALES;
+		return $this->is_sales == 'Y' ? true : false;
 	}
 }
