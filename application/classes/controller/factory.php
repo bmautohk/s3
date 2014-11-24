@@ -9,9 +9,9 @@ class Controller_Factory extends Controller_CustomTemplate {
 		} else if ($this->hasPrivilege('factory_gz_gift')) {
 			$this->action_gift_list(GlobalConstant::FORM_FACTORY_GZ);
 		} else if ($this->hasPrivilege('factory_ben_list')) {
-			$this->action_list(GlobalConstant::FORM_FACTORY_GZ);
+			$this->action_list(GlobalConstant::FORM_FACTORY_BEN);
 		} else if ($this->hasPrivilege('factory_ben_gift')) {
-			$this->action_gift_list(GlobalConstant::FORM_FACTORY_GZ);
+			$this->action_gift_list(GlobalConstant::FORM_FACTORY_BEN);
 		} else {
 			$this->request->redirect('main/no_permission');
 		}
