@@ -28,6 +28,11 @@ $isSales = Auth::instance()->get_user()->isSales();
 			</tr>
 			
 			<tr>
+				<td><? echo __('label.container_no'); ?></td>
+				<td><? echo Form::input("container_no", $form->container_no); ?></td>
+			</tr>
+			
+			<tr>
 				<td><? echo __('label.order_type'); ?></td>
 				<td><? echo Form::select("order_type_id", Model_OrderType::getOptions(true), $form->order_type_id); ?></td>
 			</tr>

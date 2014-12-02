@@ -8,6 +8,7 @@ class Model_Sales_OrderSearchForm extends Model_PageForm {
 	public $customer_id;
 	public $search_order_id;
 	public $product_cd;
+	public $container_no;
 	public $order_type_id;
 	public $username;
 	public $status;
@@ -27,6 +28,7 @@ class Model_Sales_OrderSearchForm extends Model_PageForm {
 		$this->customer_id = isset($post['customer_id']) ? $post['customer_id'] : NULL;
 		$this->search_order_id = isset($post['search_order_id']) ? $post['search_order_id'] : NULL;
 		$this->product_cd = isset($post['product_cd']) ? $post['product_cd'] : NULL;
+		$this->container_no = isset($post['container_no']) ? $post['container_no'] : NULL;
 		$this->order_type_id = isset($post['order_type_id']) ? $post['order_type_id'] : NULL;
 		$this->username = isset($post['username']) ? $post['username'] : NULL;
 		$this->status = isset($post['status']) ? $post['status'] : NULL;
@@ -297,6 +299,10 @@ class Model_Sales_OrderSearchForm extends Model_PageForm {
 			$orm->where('product_cd', 'like', '%'.$this->product_cd.'%');
 		}
 		
+		if (!empty($this->container_no)) {
+			$orm->where('containerSummary.container_no_list', 'like', '%'.$this->container_no.'%');
+		}
+		
 		if (!empty($this->order_type_id)) {
 			$orm->where('order_type_id', '=', $this->order_type_id);
 		}
@@ -354,6 +360,10 @@ class Model_Sales_OrderSearchForm extends Model_PageForm {
 		
 		if (!empty($this->product_cd)) {
 			$query_string .= '&product_cd='.$this->product_cd;
+		}
+		
+		if (!empty($this->container_no)) {
+			$query_string .= '&container_no='.$this->container_no;
 		}
 		
 		if (!empty($this->order_type_id)) {

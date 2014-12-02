@@ -21,16 +21,19 @@ echo Form::hidden('delivery_note_id', '', array('id'=>'delivery_note_id'));
 	<input type="button" onclick="search()" value="<? echo __('button.search'); ?>" />
 <? echo Form::close(); ?>
 
-<div style="width:400px; text-aligh:auto">
+<div style="width:700px; text-aligh:auto">
 	<? echo $form->pager(); ?>
-	<table border="1">
+	<table border="1" width="100%">
 		<tr>
 			<td>輸入経費請求書 ID</td>
 			<td><? echo __('label.cust_code'); ?></td>
 			<td>金額</td>
 			<td>請求日期 </td>
 			<td>確認日期 </td>
-			<td>確認</td>
+			<td>Cancel 日期 </td>
+			<td>Remark</td>
+			<td style="width:45px">確認</td>
+			<td style="width:62px">Cancel</td>
 		</tr>
 		<? foreach ($form->shippingFeeDeliveryNotes as $deliveryNote) { ?>
 		<tr>
@@ -39,9 +42,16 @@ echo Form::hidden('delivery_note_id', '', array('id'=>'delivery_note_id'));
 			<td><?=$deliveryNote->total_amt ?></td>
 			<td><?=date("Y-m-d", strtotime($deliveryNote->create_date)) ?></td>
 			<td><?=$deliveryNote->settle_date != null ? date("Y-m-d", strtotime($deliveryNote->settle_date)) : ''  ?></td>
+			<td><?=$deliveryNote->void_date != null ? date("Y-m-d", strtotime($deliveryNote->void_date)) : ''  ?></td>
+			<td><?=$deliveryNote->remark ?></td>
 			<td>
 				<? if ($deliveryNote->is_settle == Model_ShippingFeeDeliveryNote::SETTLE_NO) { ?>
 					<input type="button" value="確認" onclick="confirm(<?=$deliveryNote->id ?>)" />
+				<? } ?>
+			</td>
+			<td>
+				<? if ($deliveryNote->is_settle == Model_ShippingFeeDeliveryNote::SETTLE_NO) { ?>
+					<input type="button" value="Cancel" onclick="cancel(<?=$deliveryNote->id ?>)" />
 				<? } ?>
 			</td>
 		</tr>
@@ -72,7 +82,14 @@ function search() {
 }
 
 function confirm(id) {
-	$('#action').val('confirm');
+	$('#action').val('confirm_init');
+	$('#delivery_note_id').val(id);
+	$('#form1').attr('method', 'post');
+	$('#form1').submit();
+}
+
+function cancel(id) {
+	$('#action').val('cancel_init');
 	$('#delivery_note_id').val(id);
 	$('#form1').attr('method', 'post');
 	$('#form1').submit();

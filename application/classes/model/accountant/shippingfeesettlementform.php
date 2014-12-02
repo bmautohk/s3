@@ -1,5 +1,10 @@
 <?php
 class Model_Accountant_ShippingFeeSettlementForm extends Model_PageForm {
+	const ACTION_CONFIRM_INIT = 'confirm_init';
+	const ACTION_CANCEL_INIT = 'cancel_init';
+	const ACTION_CONFIRM = 'confirm';
+	const ACTION_CANCEL = 'cancel';
+	
 	public $action;
 	public $delivery_note_id;
 	public $customer_id;
@@ -8,6 +13,10 @@ class Model_Accountant_ShippingFeeSettlementForm extends Model_PageForm {
 	
 	public $shippingFeeDeliveryNotes;
 	public $errors;
+	
+	// Confirm / Cancel
+	public $shippingDeliveryNote;
+	public $remark;
 	
 	public $page_url = 'accountant/shipping_fee_settlement';
 	
@@ -19,6 +28,10 @@ class Model_Accountant_ShippingFeeSettlementForm extends Model_PageForm {
 		$this->customer_id = isset($post['customer_id']) ? trim($post['customer_id']) : NULL;
 		$this->create_date_from = isset($post['create_date_from']) ? trim($post['create_date_from']) : NULL;
 		$this->create_date_to = isset($post['create_date_to']) ? trim($post['create_date_to']) : NULL;
+		
+		if ($this->action == self::ACTION_CONFIRM || $this->action == self::ACTION_CANCEL) {
+			$this->remark = isset($post['remark']) ? trim($post['remark']) : NULL;
+		}
 	}
 	
 	public function processSearchAction() {
@@ -26,18 +39,33 @@ class Model_Accountant_ShippingFeeSettlementForm extends Model_PageForm {
 	}
 	
 	public function processConfirmInit() {
-		$this->depositSettle = Model::factory('shippingFeeDeliveryNote')
-				->with('order')
-				->join('customer')->on('customer.id', '=', 'order.customer_id')
-				->where('depositsettle.id', '=', $this->deposit_settle_id)
-				->select('cust_code')
-				->find();
+		$this->shippingDeliveryNote = Model::factory('shippingFeeDeliveryNote')
+										->with('customer')
+										->where('shippingfeedeliverynote.id', '=', $this->delivery_note_id)
+										->select('cust_code')
+										->find();
 	
-		return $this->depositSettle->loaded() ? true : false;
+		return $this->shippingDeliveryNote->loaded() ? true : false;
 	}
 	
 	public function processConfirmAction() {
 		$result = $this->confirm();
+		$this->processSearchAction();
+		return $result;
+	}
+	
+	public function processCancelInit() {
+		$this->shippingDeliveryNote = Model::factory('shippingFeeDeliveryNote')
+										->with('customer')
+										->where('shippingfeedeliverynote.id', '=', $this->delivery_note_id)
+										->select('cust_code')
+										->find();
+	
+		return $this->shippingDeliveryNote->loaded() ? true : false;
+	}
+	
+	public function processCancelAction() {
+		$result = $this->cancel();
 		$this->processSearchAction();
 		return $result;
 	}
@@ -54,14 +82,48 @@ class Model_Accountant_ShippingFeeSettlementForm extends Model_PageForm {
 			if (!$deliveryNote->loaded()) {
 				$this->errors[] = 'Record not found';
 				return false;
-			} else if ($deliveryNote->is_settle == Model_ShippingFeeDeliveryNote::SETTLE_YES) {
+			} else if ($deliveryNote->is_settle != Model_ShippingFeeDeliveryNote::SETTLE_NO) {
 				$this->errors[] = 'The invoice has already been settled.';
 				return false;
 			}
 				
-			// Updated order's confirmed deposit amount
+			// Updated order's confirmed amount
 			$deliveryNote->is_settle = Model_ShippingFeeDeliveryNote::SETTLE_YES;
+			$deliveryNote->remark = $this->remark;
 			$deliveryNote->settle_date = DB::expr('current_timestamp');
+			$deliveryNote->save();
+		} catch (Exception $e) {
+			$db->rollback();
+			$this->errors[] = $e->getMessage();
+			return false;
+		}
+	
+		$db->commit();
+	
+		return true;
+	}
+	
+	private function cancel() {
+		$this->errors = array();
+	
+		$db = Database::instance();
+		$db->begin();
+	
+		try {
+			$deliveryNote = new Model_ShippingFeeDeliveryNote($this->delivery_note_id);
+	
+			if (!$deliveryNote->loaded()) {
+				$this->errors[] = 'Record not found';
+				return false;
+			} else if ($deliveryNote->is_settle != Model_ShippingFeeDeliveryNote::SETTLE_NO) {
+				$this->errors[] = 'The invoice has already been settled.';
+				return false;
+			}
+	
+			// Updated order's confirmed amount
+			$deliveryNote->is_settle = Model_ShippingFeeDeliveryNote::SETTLE_VOID;
+			$deliveryNote->remark = $this->remark;
+			$deliveryNote->void_date = DB::expr('current_timestamp');
 			$deliveryNote->save();
 		} catch (Exception $e) {
 			$db->rollback();

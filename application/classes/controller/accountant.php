@@ -332,36 +332,66 @@ class Controller_Accountant extends Controller_CustomTemplate {
 	
 		if (HTTP_Request::POST == $this->request->method()) {
 			$this->checkPrivilege('accountant_shipping_fee_settlement', Model_RoleMatrix::PERMISSION_WRITE); // Check privilege
-				
-			if ($form->processConfirmAction()) {
-				$this->template->set('success', '請求書 has been settled.');
-			} else {
-				$this->template->set('errors', $form->errors);
-			}
-				
-			// Display
-			$view = View::factory('accountant/shipping_fee_settlement_list');
-			$view->set('form', $form);
-			$this->template->set('content', $view);
-			$this->template->set('submenu', 'shipping_fee_settlement');
-		} else {
-			if ($form->action == 'confirm') {
-				// Go to confirm page
-				$this->checkPrivilege('accountant_shipping_fee_settlement', Model_RoleMatrix::PERMISSION_WRITE); // Check privilege
-				
+			
+			if ($form->action == Model_Accountant_ShippingFeeSettlementForm::ACTION_CONFIRM_INIT) {
+				/**
+				 * Go to confirm page
+				 */
 				if ($form->processConfirmInit()) {
 					// Display
-					$view = View::factory('accountant/deposit_settlement_confirm');
+					$view = View::factory('accountant/shipping_fee_settlement_confirm');
 					$view->set('form', $form);
 					$this->template->set('content', $view);
-					$this->template->set('submenu', 'deposit_settlement');
+					$this->template->set('submenu', 'shipping_fee_settlement');
 					return;
 				} else {
 					$this->template->set('errors', $form->errors);
 				}
-			} else {
-				$this->checkPrivilege('accountant_shipping_fee_settlement'); // Check privilege
+			
+			} if ($form->action == Model_Accountant_ShippingFeeSettlementForm::ACTION_CANCEL_INIT) {
+				/**
+				 * Go to cancel page
+				 */
+				if ($form->processCancelInit()) {
+					// Display
+					$view = View::factory('accountant/shipping_fee_settlement_cancel');
+					$view->set('form', $form);
+					$this->template->set('content', $view);
+					$this->template->set('submenu', 'shipping_fee_settlement');
+					return;
+				} else {
+					$this->template->set('errors', $form->errors);
+				}
+			
+			} if ($form->action == Model_Accountant_ShippingFeeSettlementForm::ACTION_CONFIRM) {
+				if ($form->processConfirmAction()) {
+					$this->template->set('success', '請求書 has been settled.');
+				} else {
+					$this->template->set('errors', $form->errors);
+				}
+				
+				// Display
+				$view = View::factory('accountant/shipping_fee_settlement_list');
+				$view->set('form', $form);
+				$this->template->set('content', $view);
+				$this->template->set('submenu', 'shipping_fee_settlement');
+				
+			} if ($form->action == Model_Accountant_ShippingFeeSettlementForm::ACTION_CANCEL) {
+				if ($form->processCancelAction()) {
+					$this->template->set('success', '請求書 has been cancelled.');
+				} else {
+					$this->template->set('errors', $form->errors);
+				}
+				
+				// Display
+				$view = View::factory('accountant/shipping_fee_settlement_list');
+				$view->set('form', $form);
+				$this->template->set('content', $view);
+				$this->template->set('submenu', 'shipping_fee_settlement');
 			}
+			
+		} else {
+			$this->checkPrivilege('accountant_shipping_fee_settlement'); // Check privilege
 			
 			// Search action
 			$form->processSearchAction();
@@ -389,7 +419,10 @@ class Controller_Accountant extends Controller_CustomTemplate {
 			} else {
 				$this->template->set('errors', $form->errors);
 			}
-		}
+		} /*else {
+			$this->checkPrivilege('accountant_invoice_settlement');
+			$form->processShowRemainingAction();
+		}*/
 
 		// Display
 		$view = View::factory('accountant/invoice_settlement');
