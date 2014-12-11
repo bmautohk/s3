@@ -5,6 +5,7 @@ class Model_Accountant_InvoiceSettlementForm {
 	public $customer_id;
 	
 	public $invoices;
+	public $invoicesWithRemainingAmt;
 	public $invoiceSettle;
 	public $invoiceSettleHistory;
 	
@@ -28,6 +29,21 @@ class Model_Accountant_InvoiceSettlementForm {
 		$this->search();
 		
 		return $result;
+	}
+	
+	public function processShowRemainingAction() {
+		$sub = DB::select('customer_id', array('max("id")', 'invoice_id'))
+				->from('invoice')
+				->group_by('customer_id');
+		
+		$this->invoicesWithRemainingAmt = Model::factory('invoice')
+											->with('customer')
+											->join('bank_account', 'left')->on('bank_account.id', '=', 'bank_id')
+											->join(array($sub, 'tmp'), 'INNER')->on('tmp.invoice_id', '=', 'invoice.id')
+											//->where('invoice.total_amt', '>', DB::expr('invoice.settle_amt'))
+											->select('bank_name')
+											->order_by('cust_code')
+											->find_all();
 	}
 	
 	private function search() {

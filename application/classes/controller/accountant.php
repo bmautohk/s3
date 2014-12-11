@@ -419,10 +419,10 @@ class Controller_Accountant extends Controller_CustomTemplate {
 			} else {
 				$this->template->set('errors', $form->errors);
 			}
-		} /*else {
+		} else {
 			$this->checkPrivilege('accountant_invoice_settlement');
 			$form->processShowRemainingAction();
-		}*/
+		}
 
 		// Display
 		$view = View::factory('accountant/invoice_settlement');

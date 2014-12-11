@@ -12,7 +12,7 @@ echo Form::hidden('action', 'search'); ?>
 		<tr>
 			<td>請求書編號</td>
 			<td>發單日期</td>
-			<td>cust code</td>
+			<td><? echo __('label.cust_code'); ?></td>
 			<td>上月金額</td>
 			<td>已付金額</td>
 			<td>上月余額</td>
@@ -102,6 +102,43 @@ echo Form::hidden('action', 'search'); ?>
 		</tr>
 		<? } ?>
 	</table>
+<? } else { ?>
+	残金列表
+	<table border="1">
+		<tr>
+			<td>請求書編號</td>
+			<td>發單日期</td>
+			<td><? echo __('label.cust_code'); ?></td>
+			<td>上月金額</td>
+			<td>已付金額</td>
+			<td>上月余額</td>
+			<td>本月金額</td>
+			<td>消費稅</td>
+			<td>今回請求金額</td>
+			<td>今回已付金額</td>
+			<td>殘金</td>
+			<td>BANK</td>
+			<td>相關納品書</td>
+		</tr>
+		<? foreach ($form->invoicesWithRemainingAmt as $invoice) { ?>
+		<tr>
+			<td><?=$invoice->invoice_no ?></td>
+			<td><?=date("Y-m-d", strtotime($invoice->create_date)) ?></td>
+			<td><?=$invoice->customer->cust_code ?></td>
+			<td><?=GlobalFunction::displayJPYNumber($invoice->last_month_amt) ?></td>
+			<td><?=GlobalFunction::displayJPYNumber($invoice->last_month_settle) ?></td>
+			<td><?=GlobalFunction::displayJPYNumber($invoice->last_month_amt - $invoice->last_month_settle) ?></td>
+			<td><?=GlobalFunction::displayJPYNumber($invoice->current_month_amt) ?></td>
+			<td><?=GlobalFunction::displayJPYNumber($invoice->total_tax) ?></td>
+			<td><?=GlobalFunction::displayJPYNumber($invoice->total_amt) ?></td>
+			<td><?=GlobalFunction::displayJPYNumber($invoice->settle_amt) ?></td>
+			<td><?=GlobalFunction::displayJPYNumber($invoice->total_amt - $invoice->settle_amt) ?></td>
+			<td><?=$invoice->bank_name ?></td>
+			<td><?=$invoice->delivery_note_id_list ?></td>
+		</tr>
+		<? } ?>
+	</table>
+
 <? } ?>
 
 <script type="text/javascript">
