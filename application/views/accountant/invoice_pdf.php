@@ -23,7 +23,6 @@ $invoice = $form->invoice;
 		<td class="detail">御入金額</td>
 		<td class="detail">繰越金額</td>
 		<td class="detail">今回御買上額</td>
-		<td class="detail">消費税</td>
 		<td class="detail">源泉徵收税額</td>
 		<td class="detail">今回請求金額</td>
 	</tr>
@@ -31,8 +30,7 @@ $invoice = $form->invoice;
 		<td class="detail">￥<?=GlobalFunction::displayJPYNumber($invoice->last_month_amt) ?></td>
 		<td class="detail">￥<?=GlobalFunction::displayJPYNumber($invoice->last_month_settle) ?></td>
 		<td class="detail">￥<?=GlobalFunction::displayJPYNumber($invoice->last_month_amt - $invoice->last_month_settle) ?></td>
-		<td class="detail">￥<?=GlobalFunction::displayJPYNumber($invoice->current_month_amt) ?></td>
-		<td class="detail">￥<?=GlobalFunction::displayJPYNumber($invoice->total_tax) ?></td>
+		<td class="detail">￥<?=GlobalFunction::displayJPYNumber($invoice->current_month_amt + $invoice->total_tax) ?></td>
 		<td class="detail"></td>
 		<td class="detail">￥<?=GlobalFunction::displayJPYNumber($invoice->total_amt) ?></td>
 	</tr>

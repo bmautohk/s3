@@ -46,7 +46,14 @@
 			
 			<tr>
 				<td>代號cust code:</td>
-				<td><? echo Form::input('cust_code', $customer->cust_code); ?></td>
+				<td>
+					<? if ($customer->id != 0) {
+						echo Form::input('cust_code', $customer->cust_code, array('disabled'=>''));
+					} else {
+						echo Form::input('cust_code', $customer->cust_code);
+					}
+					?>
+				</td>
 			</tr>
 			
 			<tr>

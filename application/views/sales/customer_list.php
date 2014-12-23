@@ -12,6 +12,7 @@
 		<td>TEL</td>
 		<td>Email</td>
 		<td>代號cust code</td>
+		<td>Ben1 Sales Group</td>
 		<td>社長名字</td>
 		<td>聯絡人名字</td>
 		<td>備考</td>
@@ -36,6 +37,7 @@
 		<td><?=$customer->tel ?></td>
 		<td><?=$customer->email ?></td>
 		<td><?=$customer->cust_code ?></td>
+		<td><?=$customer->getS1SalesGroup() ?></td>
 		<td><?=$customer->manager_name ?></td>
 		<td><?=$customer->contact_person ?></td>
 		<td><?=$customer->remark ?></td>

@@ -40,6 +40,10 @@ class Model_Customer extends ORM {
 		);
 	}
 	
+	public function getS1SalesGroup() {
+		return $this->cust_code.'_wholesale';
+	}
+	
 	public static function getOptions($hasAll = false) {
 		$user = Auth::instance()->get_user();
 		if (!$user->isSales()) {

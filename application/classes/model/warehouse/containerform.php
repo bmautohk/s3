@@ -240,9 +240,18 @@ class Model_Warehouse_ContainerForm {
 			// Decrease QTY that warehouse needs to deliver to accountant
 			$container->delivery_qty -= $this->inputContainerReturn->qty;
 			
+			if ($container->delivery_qty == 0) {
+				$container->status = Model_Container::STATUS_COMPLETE;
+			}
+			
 			// Save to DB
 			$this->inputContainerReturn->save();
 			$container->save();
+
+			// Refresh the flag "has_container_to_accountant"
+			$orderProduct = new Model_OrderProduct($container->order_product_id);
+			$orderProduct->refreshHasContainerToAccountant();
+			$orderProduct->save();
 			
 		} catch (ORM_Validation_Exception $e) {
 			foreach ($e->errors('warehouse') as $error) {

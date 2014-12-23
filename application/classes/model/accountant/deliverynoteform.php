@@ -1,6 +1,5 @@
 <?php
 class Model_Accountant_DeliveryNoteForm extends Model_PageForm {
-	const S1_SALES = 'BM wholesale';
 	
 	public $action;
 	
@@ -785,7 +784,7 @@ class Model_Accountant_DeliveryNoteForm extends Model_PageForm {
 		$sale->sale_ref = $nextSaleRef;
 		//$sale->sale_date = DB::expr('current_date');
 		$sale->sale_date = $deliveryNote->print_date;
-		$sale->sale_group = Model_Accountant_DeliveryNoteForm::S1_SALES;
+		$sale->sale_group = $customer->getS1SalesGroup();
 		$sale->sale_yahoo_id = $customer->cust_code.'-'.$deliveryNote->delivery_note_no;
 		$sale->sale_dat = DB::expr('current_date');
 		$sale->sale_chk_ref = Model_S1_BenSale::SALE_CHK_REF_S3;
