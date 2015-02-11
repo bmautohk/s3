@@ -12,7 +12,7 @@
 								<span class="cat cat"><? echo HTML::anchor('/sales/order_add', '訂單', array('class'=>'big')); ?></span>
 							</TD>
 							<TD width="156" <?=$submenu == 'order_return' ? 'class=\'submenu\'' : '' ?>>
-								<span class="cat cat"><? echo HTML::anchor('/sales/order_return', '客人退貨', array('class'=>'big')); ?></span>
+								<span class="cat cat"><? echo HTML::anchor('/sales/order_return', '赤伝', array('class'=>'big')); ?></span>
 							</TD>
 							<TD width="156" <?=$submenu == 'shipping_fee' ? 'class=\'submenu\'' : '' ?>>
 								<span class="cat cat"><? echo HTML::anchor('/sales/shipping_fee', '経費', array('class'=>'big')); ?></span>

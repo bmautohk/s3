@@ -21,7 +21,7 @@
 								<span class="cat cat"><? echo HTML::anchor('/warehouse/kaito_product_list', '海渡商品', array('class'=>'big')); ?></span>
 							</TD>
 							<TD width="156" <?=$submenu == 'order_return_confirm' ? 'class=\'submenu\'' : '' ?>>
-								<span class="cat cat"><? echo HTML::anchor('/warehouse/order_return_confirm', '客人退貨確認', array('class'=>'big')); ?></span>
+								<span class="cat cat"><? echo HTML::anchor('/warehouse/order_return_confirm', '赤伝確認', array('class'=>'big')); ?></span>
 							</TD>
 						</TR>
 
