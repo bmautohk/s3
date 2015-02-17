@@ -26,6 +26,8 @@ class Model_Sales_OrderReturnForm extends Model_PageForm {
 	}
 	
 	public function processAddAction() {
+		$this->orderReturn = new Model_OrderReturn();
+		
 		if ($this->initAddPage()) {
 			return true;
 		} else {
@@ -38,8 +40,10 @@ class Model_Sales_OrderReturnForm extends Model_PageForm {
 	public function processSaveAction() {
 		$result = $this->save();
 		
+		$this->initAddPage();
 		if ($result) {
-			$this->initAddPage();
+			// Clear input
+			$this->orderReturn = new Model_OrderReturn();
 		}
 	
 		return $result;
@@ -54,7 +58,6 @@ class Model_Sales_OrderReturnForm extends Model_PageForm {
 		}
 		$this->rmb_to_jpy_rate = $rmbJPYRate->rate;
 		
-		$this->orderReturn = new Model_OrderReturn();
 		return true;
 	}
 	

@@ -73,7 +73,7 @@ echo Form::hidden('action', 'search'); ?>
 		</tr>
 	</table>
 	
-	<input type="submit" value="入" />
+	<input type="submit" value="入" id="btn_submit" />
 	<? echo Form::close(); ?>
 
 	<hr />
@@ -148,6 +148,10 @@ echo Form::hidden('action', 'search'); ?>
 			showOn: "both",
 			buttonImage: "<?=PATH_BASE ?>media/images/calendar.gif",
 			buttonImageOnly: true
+		});
+
+		$('#btn_submit').click(function() {
+			return confirm("Are you sure to save?");
 		});
 	});
 </script>
