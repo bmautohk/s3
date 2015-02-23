@@ -1,4 +1,6 @@
-<? $isEnableReturn = Kohana::$environment == Kohana::DEVELOPMENT; 
+<? 
+//$isEnableReturn = Kohana::$environment == Kohana::DEVELOPMENT;
+$isEnableReturn = Auth::instance()->get_user()->isAdmin(); 
 $hasWrite = GlobalFunction::hasPrivilege('accountant_delivery_note', Model_RoleMatrix::PERMISSION_WRITE);
 ?>
 
