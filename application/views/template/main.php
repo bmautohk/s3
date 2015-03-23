@@ -35,7 +35,7 @@
 	<div class="successMsg"><? echo $success; ?></div>
 <? }?>
 
-<div id="main">	
+<div id="main" style="padding-left:10px">	
 	<? echo $content; ?>
 </div>
 

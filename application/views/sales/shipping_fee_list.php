@@ -12,15 +12,17 @@ echo Form::hidden('action', 'search', array('id'=>'action'));
 	<? } ?>
 <? echo Form::close(); ?>
 
-<div style="width:600px">
+<div style="width:900px">
 <? echo $form->pager(); ?>
 	<table border="1">
 		<tr>
 			<td>Cust Code</td>
 			<td>品番</td>
-			<td>品目</td>
+			<td style="width:50%">品目</td>
 			<td>合計請求金額（税込・円）</td>
-			<td>備考</td>
+			<td style="width:10%">備考</td>
+			<td style="width:10%">輸入日期</td>
+			<td></td>
 		</tr>
 		<? foreach ($form->shippingFees as $shippingFee) { ?>
 		<tr>
@@ -29,6 +31,8 @@ echo Form::hidden('action', 'search', array('id'=>'action'));
 			<td><?=$shippingFee->description ?></td>
 			<td><?=GlobalFunction::displayJPYNumber($shippingFee->amount) ?></td>
 			<td><?=$shippingFee->remark ?></td>
+			<td><?=$shippingFee->create_date ?></td>
+			<td><input type="button" value="Preview" onclick="location.href='<?=URL::site('sales/shipping_fee_view/'.$shippingFee->id) ?>'" /></td>
 		</tr>
 		<? } ?>
 	</table>

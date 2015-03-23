@@ -25,6 +25,16 @@ class Model_Sales_ShippingFeeForm extends Model_PageForm {
 		$this->shippingFees = $this->search();
 	}
 	
+	public function processViewAction($shipping_fee_id) {
+		$this->shippingFee = new Model_ShippingFee($shipping_fee_id);
+		
+		if (!$this->shippingFee->loaded()) {
+			$this->errors[] = 'Record not found';
+		} else {
+			return true;
+		}
+	}
+	
 	public function processAddAction() {
 		if ($this->initAddPage()) {
 			return true;

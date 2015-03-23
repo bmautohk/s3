@@ -251,6 +251,24 @@ class Controller_Sales extends Controller_CustomTemplate {
 		}
 	}
 	
+	public function action_shipping_fee_view() {
+		$this->checkPrivilege('sales_shipping_fee');
+		
+		$id = $this->request->param('id');
+		
+		$form = new Model_Sales_ShippingFeeForm();
+		if ($form->processViewAction($id)) {
+			// Display
+			$view = View::factory('sales/shipping_fee_view');
+			$view->set('form', $form);
+			$this->template->set('content', $view);
+			$this->template->set('submenu', 'shipping_fee');
+			return;
+		} else {
+			$this->template->set('errors', $form->errors);
+		}
+	}
+	
 /* ***************************************************************************************************************
  * deposit 確認入金
 ****************************************************************************************************************/
