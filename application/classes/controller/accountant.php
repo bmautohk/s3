@@ -143,6 +143,27 @@ class Controller_Accountant extends Controller_CustomTemplate {
 		}
 	}
 	
+	public function action_invoice_print_excel() {
+		$this->checkPrivilege('accountant_invoice');
+	
+		$id = $this->request->param('id');
+		$form = new Model_Accountant_InvoicePDFForm($id);
+	
+		if ($form->processPrintExcelAction()) {
+			// Uncomment for testing
+			/* $view = View::factory('accountant/invoice_pdf');
+				$view->set('form', $form);
+			$this->response->body($view); */
+				
+			$this->auto_render = false; // Don't render template
+		} else {
+			$this->template->set('errors', $form->errors);
+	
+			$this->auto_render = false; // Don't render template
+			echo 'Fail to generate delivery note.';
+		}
+	}
+	
 // -------------------------------------------------------------------------
 	public function action_order_return_invoice() {
 		$form = new Model_Accountant_OrderReturnInvoiceForm();

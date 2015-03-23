@@ -48,6 +48,7 @@ $customerOptions = Model_Customer::getOptions();
 		<td>已付金額</td>
 		<td>Last Print Date</td>
 		<td>Re-Print</td>
+		<td>Excel</td>
 	</tr>
 	<? foreach ($form->invoices as $invoice) { ?>
 	<tr>
@@ -58,6 +59,7 @@ $customerOptions = Model_Customer::getOptions();
 		<td><?=GlobalFunction::displayJPYNumber($invoice->settle_amt) ?></td>
 		<td><?=$invoice->last_print_date ?></td>
 		<td><input type="button" value="<?=$invoice->last_print_date == NULL ? 'Print' : 'Reprint' ?>" onclick="javascript:print(<?=$invoice->id ?>)"/></td>
+		<td><input type="button" value="Excel" onclick="javascript:printExcel(<?=$invoice->id ?>)"/></td>
 	</tr>
 	<? } ?>
 </table>
@@ -89,6 +91,10 @@ $customerOptions = Model_Customer::getOptions();
 
 	function print(invoice_id) {
 		window.open("invoice_print/" + invoice_id);
+	}
+
+	function printExcel(invoice_id) {
+		window.open("invoice_print_excel/" + invoice_id);
 	}
 
 	function customerChange() {
