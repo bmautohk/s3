@@ -13,9 +13,12 @@ class Model_Factory_SearchForm extends Model_PageForm {
 	public $search_translator_last_update_date_to;
 	public $search_status;
 	public $search_order_id;
+
+	public $order_product_ids;
 	
 	public $orderProducts;
-	
+	public $errors;
+
 	public $page_url = 'factory/list/factory';
 	
 	public function __construct($factory) {
@@ -35,10 +38,80 @@ class Model_Factory_SearchForm extends Model_PageForm {
 		$this->search_translator_last_update_date_to = isset($post['search_translator_last_update_date_to']) ? $post['search_translator_last_update_date_to'] : NULL;
 		$this->search_status = isset($post['search_status']) ? $post['search_status'] : NULL;
 		$this->search_order_id = isset($post['search_order_id']) ? $post['search_order_id'] : NULL;
+
+		$this->order_product_ids = isset($post['order_product_ids']) ? $post['order_product_ids'] : NULL;
 	}
 	
 	public function searchAction() {
 		$this->orderProducts = $this->search();
+	}
+
+	public function voidOrderAction() {
+		$input_order_ids = $this->getOrderIds($this->order_product_ids);
+
+		$isSuccess = false;
+		try {
+			$this->validateVoidOrder($input_order_ids);
+			$this->voidOrder($input_order_ids);
+			$isSuccess = true;
+		} catch (Exception $e) {
+			$this->errors[] = $e->getMessage();
+		}
+
+		$this->searchAction();
+
+		return $isSuccess;
+	}
+
+	private function getOrderIds($order_product_ids) {
+		$order_ids = DB::select('order_id')
+					->distinct(true)
+					->from('order_product')
+					->where('id', 'in', $order_product_ids)
+					->execute();
+		return $order_ids;
+	}
+
+	private function validateVoidOrder($order_ids) {
+		foreach ($order_ids as $order_id) {
+			$products = ORM::factory('orderproduct')
+					->where('order_id', '=', $order_id)
+					->find_all();
+
+			foreach ($products as $product) {
+				if ($product->factory_status != Model_OrderProduct::STATUS_FACTORY) {
+					throw new Exception("You can't void the order. Not all products in order[$order_id] are in 工場.");
+				}
+			}
+		}
+	}
+
+	private function voidOrder($order_ids) {
+		$db = Database::instance();
+		$db->begin();
+		
+		try {
+			foreach ($order_ids as $order_id) {
+				$order = ORM::factory('order')->where('id', '=', $order_id)->find();
+				$order->status = Model_Order::STATUS_VOID;
+				$order->save();
+
+				$products = ORM::factory('orderproduct')
+						->where('order_id', '=', $order_id)
+						->find_all();
+
+				foreach ($products as $product) {
+					$product->factory_status = Model_OrderProduct::STATUS_CANCEL;
+					$product->jp_status = Model_OrderProduct::STATUS_CANCEL;
+					$product->save();
+				}
+			}
+		} catch (Exception $e) {
+			$db->rollback();
+			throw $e;
+		}
+		
+		$db->commit();
 	}
 	
 	public function exportAction() {
@@ -105,7 +178,7 @@ class Model_Factory_SearchForm extends Model_PageForm {
 			->setCellValueByColumnAndRow($i++, $rowNo, $orderProduct->made)
 			->setCellValueByColumnAndRow($i++, $rowNo, $orderProduct->model)
 			->setCellValueByColumnAndRow($i++, $rowNo, $orderProduct->model_no)
-			->setCellValueByColumnAndRow($i++, $rowNo, $orderProduct->accessory_remark)
+			->setCellValueExplicitByColumnAndRow($i++, $rowNo, $orderProduct->accessory_remark)
 			->setCellValueByColumnAndRow($i++, $rowNo, $orderProduct->year)
 			//->setCellValueByColumnAndRow($i++, $rowNo, $orderProduct->colour)
 			->setCellValueByColumnAndRow($i++, $rowNo, $orderProduct->colour_no)
