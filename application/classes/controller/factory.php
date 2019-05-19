@@ -125,6 +125,29 @@ class Controller_Factory extends Controller_CustomTemplate {
 		$this->template->set('content', $view);
 		$this->template->set('submenu', 'list_'.$factory);
 	}
+
+	public function action_save() {
+		$factory = $this->request->param('factory');
+		
+		$this->checkPrivilege('factory_'.$factory.'_list', Model_RoleMatrix::PERMISSION_WRITE);
+		
+		$form = new Model_Factory_SearchForm($factory);
+		$form->populate($_POST);
+	
+		if (HTTP_Request::POST == $this->request->method()) {
+			if ($form->voidOrderAction()) {
+				$this->template->set('success', __('save.success'));
+			} else {
+				$this->template->set('errors', $form->errors);
+			}
+		}
+		
+		// Display
+		$view = View::factory('factory/product_list');
+		$view->set('form', $form);
+		$this->template->set('content', $view);
+		$this->template->set('submenu', 'list_'.$factory);
+	}
 	
 /* ******************************************************
  * Gift
