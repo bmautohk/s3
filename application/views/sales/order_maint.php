@@ -275,7 +275,7 @@ $displayRate = 'Rate: RMB<->USD '.$order->rmb_to_usd_rate.', RMB<->JPY '.$order-
 			</tr>
 			
 			<tr>
-				<td>Deposit Amount 訂金:</td>
+				<td>Deposit Amount 頭金:</td>
 				<td>RMB<? echo Form::input('deposit_amt', $order->deposit_amt, array('id'=>'deposit_amt')); ?><span id="div_deposit_amt">(￥<?=ceil($order->deposit_amt * $order->rmb_to_jpy_rate) ?>)</span></td>
 			</tr>
 				<tr>
@@ -338,6 +338,8 @@ $displayRate = 'Rate: RMB<->USD '.$order->rmb_to_usd_rate.', RMB<->JPY '.$order-
 
 		if (!isTempOrderType) {
 			initAutocomplete();
+		} else {
+			initTempProductAutocomplete();
 		}
 		
 		<? if ($form->isPrintQuotation) { ?>
@@ -392,6 +394,8 @@ $displayRate = 'Rate: RMB<->USD '.$order->rmb_to_usd_rate.', RMB<->JPY '.$order-
 
 		if (!isTempOrderType) {
 			initAutocomplete();
+		} else {
+			initTempProductAutocomplete();
 		}
 		initSubTotal();
 	}
@@ -465,44 +469,17 @@ $displayRate = 'Rate: RMB<->USD '.$order->rmb_to_usd_rate.', RMB<->JPY '.$order-
 			source: "<?=PATH_BASE ?>product/search",
 			select: function( event, ui ) {
 				var elem = $(this).parent().siblings('td:nth-of-type(12)');
+				assigProductInfo(elem, ui.item);
+			}
+		});
+	}
 
-				elem.html(ui.item.business_price);
-				elem = elem.next();
-				
-				elem.html(ui.item.product_desc);
-				elem = elem.next();
-
-				elem.html(ui.item.made);
-				elem = elem.next();
-
-				elem.html(ui.item.model);
-				elem = elem.next();
-
-				elem.html(ui.item.model_no);
-				elem = elem.next();
-
-				elem.html(ui.item.colour);
-				elem = elem.next();
-
-				elem.html(ui.item.colour_no);
-				elem = elem.next();
-
-				elem.html(ui.item.pcs);
-				elem = elem.next();
-
-				elem.html(ui.item.material);
-				elem = elem.next();
-
-				elem.html(ui.item.accessory_remark);
-				elem = elem.next();
-
-				elem.html(ui.item.year);
-				elem = elem.next();
-				
-				elem = elem.next();
-				elem = elem.next();
-
-				elem.html(ui.item.supplier);
+	function initTempProductAutocomplete() {
+		$('input[name^="orderProducts"][name$="][product_cd]"]').autocomplete({
+			source: "<?=PATH_BASE ?>product/searchTempProduct",
+			select: function( event, ui ) {
+				var elem = $(this).parent().siblings('td:nth-of-type(12)');
+				assigProductInfo(elem, ui.item);
 			}
 		});
 	}
@@ -510,51 +487,95 @@ $displayRate = 'Rate: RMB<->USD '.$order->rmb_to_usd_rate.', RMB<->JPY '.$order-
 	function getProduct(elem) {
 		$.ajax({
 			dataType: "json",
-			url: '<?=PATH_BASE ?>product/search_by_cd',
+			url: isTempOrderType ? '<?=PATH_BASE ?>product/search_temp_by_cd' : '<?=PATH_BASE ?>product/search_by_cd',
 			data: {term: $(elem).val()},
 			context: elem,
 			success: function(data) {
 				var elem = $(this).parent().siblings('td:nth-of-type(12)');
-
-				elem.html(data.business_price);
-				elem = elem.next();
-
-				elem.html(data.product_desc);
-				elem = elem.next();
-
-				elem.html(data.made);
-				elem = elem.next();
-
-				elem.html(data.model);
-				elem = elem.next();
-
-				elem.html(data.model_no);
-				elem = elem.next();
-
-				elem.html(data.colour);
-				elem = elem.next();
-
-				elem.html(data.colour_no);
-				elem = elem.next();
-
-				elem.html(data.pcs);
-				elem = elem.next();
-
-				elem.html(data.material);
-				elem = elem.next();
-				
-				elem.html(data.accessory_remark);
-				elem = elem.next();
-
-				elem.html(data.year);
-				elem = elem.next();
-				
-				elem = elem.next();
-				elem = elem.next();
-
-				elem.html(data.supplier);
+				assigProductInfo(elem, data);
 			}
 		});
+	}
+
+	function assigProductInfo (elem, data) {
+		if (!isTempOrderType) {
+			elem.html(data.business_price);
+			elem = elem.next();
+
+			elem.html(data.product_desc);
+			elem = elem.next();
+
+			elem.html(data.made);
+			elem = elem.next();
+
+			elem.html(data.model);
+			elem = elem.next();
+
+			elem.html(data.model_no);
+			elem = elem.next();
+
+			elem.html(data.colour);
+			elem = elem.next();
+
+			elem.html(data.colour_no);
+			elem = elem.next();
+
+			elem.html(data.pcs);
+			elem = elem.next();
+
+			elem.html(data.material);
+			elem = elem.next();
+			
+			elem.html(data.accessory_remark);
+			elem = elem.next();
+
+			elem.html(data.year);
+			elem = elem.next();
+			
+			elem = elem.next();
+			elem = elem.next();
+
+			elem.html(data.supplier);
+
+		} else {
+			elem.children("input[name$='[business_price]']").val(data.business_price);
+			elem = elem.next();
+			
+			elem.children("input[name$='[product_desc]']").val(data.product_desc);
+			elem = elem.next();
+
+			elem.children("input[name$='[made]']").val(data.made);
+			elem = elem.next();
+
+			elem.children("input[name$='[model]']").val(data.model);
+			elem = elem.next();
+
+			elem.children("input[name$='[model_no]']").val(data.model_no);
+			elem = elem.next();
+
+			elem.children("input[name$='[colour]']").val(data.colour);
+			elem = elem.next();
+
+			elem.children("input[name$='[colour_no]']").val(data.colour_no);
+			elem = elem.next();
+
+			elem.children("input[name$='[pcs]']").val(data.pcs);
+			elem = elem.next();
+
+			elem.children("input[name$='[material]']").val(data.material);
+			elem = elem.next();
+
+			elem.children("input[name$='[accessory_remark]']").val(data.accessory_remark);
+			elem = elem.next();
+
+			elem.children("input[name$='[year]']").val(data.year);
+			elem = elem.next();
+			
+			elem = elem.next();
+			elem = elem.next();
+
+			elem.children("input[name$='[supplier]']").val(data.supplier);
+		}
 	}
 
 	function save() {

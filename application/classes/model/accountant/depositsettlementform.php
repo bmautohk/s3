@@ -5,6 +5,7 @@ class Model_Accountant_DepositSettlementForm extends Model_PageForm {
 	public $action;
 	public $order_id;
 	public $customer_id;
+	public $is_confirm;
 	public $settle_date_from;
 	public $settle_date_to;
 	public $deposit_settle_id;
@@ -15,6 +16,9 @@ class Model_Accountant_DepositSettlementForm extends Model_PageForm {
 	public $errors;
 	public $successMsg;
 	
+	public $orderDeposit;
+	public $remainingDeposit;
+	
 	public $page_url = 'accountant/deposit_settlement';
 	
 	public function populate($post) {
@@ -23,6 +27,7 @@ class Model_Accountant_DepositSettlementForm extends Model_PageForm {
 		$this->action = isset($post['action']) ? $post['action'] : NULL;
 		$this->order_id = isset($post['order_id']) ? trim($post['order_id']) : NULL;
 		$this->customer_id = isset($post['customer_id']) ? trim($post['customer_id']) : NULL;
+		$this->is_confirm = isset($post['is_confirm']) ? trim($post['is_confirm']) : NULL;
 		$this->settle_date_from = isset($post['settle_date_from']) ? trim($post['settle_date_from']) : NULL;
 		$this->settle_date_to = isset($post['settle_date_to']) ? trim($post['settle_date_to']) : NULL;
 		$this->deposit_settle_id = isset($post['deposit_settle_id']) ? trim($post['deposit_settle_id']) : NULL;
@@ -34,6 +39,9 @@ class Model_Accountant_DepositSettlementForm extends Model_PageForm {
 	
 	public function processSearchAction() {
 		$this->depositSettleHistory = $this->search();
+		
+		
+		
 	}
 	
 	public function exportAction() {
@@ -47,8 +55,27 @@ class Model_Accountant_DepositSettlementForm extends Model_PageForm {
 							->where('depositsettle.id', '=', $this->deposit_settle_id)
 							->select('cust_code')
 							->find();
+		
+		if (!$this->depositSettle->loaded()) {
+			return false;
+		}
+		
+		// Calculate remaining deposit of each order
+		$order = Model::factory('order')->where('order.id', '=', $this->depositSettle->order_id)->find();
+		$this->orderDeposit = $order->deposit_amt;
+		
+		$queryResult = DB::select(array(DB::expr('sum(settle_amt + fee)'), 'total'))
+					->from('deposit_settle')
+					->where('order_id', '=', $this->depositSettle->order_id)
+					->where('is_confirm', '=', Model_DepositSettle::CONFIRM_YES)
+					->execute();
+		$this->remainingDeposit = $this->orderDeposit - $queryResult[0]['total'];
+		
+		
+		
+		return true;
 
-		return $this->depositSettle->loaded() ? true : false;
+		//return $this->depositSettle->loaded() ? true : false;
 	}
 	
 	public function processConfirmAction() {
@@ -257,6 +284,8 @@ class Model_Accountant_DepositSettlementForm extends Model_PageForm {
 				->setCellValueByColumnAndRow($i++, 1, '銀行名字')
 				->setCellValueByColumnAndRow($i++, 1, 'Remark (入金管理)')
 				->setCellValueByColumnAndRow($i++, 1, '輸入日期 ')
+				->setCellValueByColumnAndRow($i++, 1, '訂單deposit ')
+				->setCellValueByColumnAndRow($i++, 1, '餘下deposit')
 		;
 	
 		$rowNo = 1;
@@ -274,6 +303,8 @@ class Model_Accountant_DepositSettlementForm extends Model_PageForm {
 					->setCellValueByColumnAndRow($i++, $rowNo, $depositSettle->bank_name)
 					->setCellValueByColumnAndRow($i++, $rowNo, $depositSettle->accountant_remark)
 					->setCellValueByColumnAndRow($i++, $rowNo, date("Y-m-d", strtotime($depositSettle->create_date)))
+					->setCellValueByColumnAndRow($i++, $rowNo, $depositSettle->order->deposit_amt)
+					->setCellValueByColumnAndRow($i++, $rowNo, $depositSettle->order->deposit_amt - $depositSettle->order->confirm_deposit_amt)
 			;
 		}
 	
@@ -289,6 +320,8 @@ class Model_Accountant_DepositSettlementForm extends Model_PageForm {
 	public function getData($limit, $offset) {
 		return $this->getCriteria()
 					->select('cust_code')
+					->order_by('is_confirm', 'asc')
+					->order_by('order_id', 'desc')
 					->order_by('create_date', 'desc')
 					->limit($limit)
 					->offset($offset)
@@ -306,6 +339,10 @@ class Model_Accountant_DepositSettlementForm extends Model_PageForm {
 		
 		if (!empty($this->customer_id)) {
 			$orm->where('order.customer_id', '=', $this->customer_id);
+		}
+		
+		if (!empty($this->is_confirm)) {
+			$orm->where('is_confirm', '=', $this->is_confirm == 'Y' ? Model_DepositSettle::CONFIRM_YES : Model_DepositSettle::CONFIRM_NO);
 		}
 		
 		if (!empty($this->settle_date_from)) {
@@ -329,6 +366,10 @@ class Model_Accountant_DepositSettlementForm extends Model_PageForm {
 		
 		if (!empty($this->customer_id)) {
 			$query_string .= '&customer_id='.$this->customer_id;
+		}
+		
+		if (!empty($this->is_confirm)) {
+			$query_string .= '&is_confirm='.$this->is_confirm;
 		}
 		
 		if (!empty($this->settle_date_from)) {

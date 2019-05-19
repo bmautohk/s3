@@ -7,6 +7,9 @@ class Model_Order extends ORM {
 	const STATUS_VOID = 'V';
 	const STATUS_COMPLETE = 'C';
 	
+	const KAITO_YES = "Y";
+	const KAITO_NO = "N";
+	
 	protected $_has_many = array('orderProducts' => array('model' => 'orderProduct', 'foreign_key' => 'order_id'));
 	
 	protected $_belongs_to = array('order_type' => array('model'=>'orderType', 'foreign_key'=>'order_type_id'),
@@ -35,6 +38,7 @@ class Model_Order extends ORM {
 			"status" => array("type" => "string"),
 			"order_date" => array("type" => "timestamp"),
 			"confirm_deposit_amt" => array("type" => "double"),
+			"is_kaito" => array("type" => "string"),
 			"created_by" => array("type" => "string"),
 			"create_date" => array("type" => "timestamp"),
 			"last_updated_by" => array("type" => "string"),

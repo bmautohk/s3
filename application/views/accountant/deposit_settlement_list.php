@@ -16,6 +16,10 @@ echo Form::hidden('deposit_settle_id', '', array('id'=>'deposit_settle_id'));
 			<td><? echo Form::select("customer_id", Model_Customer::getOptions(true), $form->customer_id); ?></td>
 		</tr>
 		<tr>
+			<td>確認:</td>
+			<td><? echo Form::select("is_confirm", array(''=>'All', 'Y'=>'完了', 'N'=>'未完'), $form->is_confirm); ?></td>
+		</tr>
+		<tr>
 			<td>入金日期:</td>
 			<td>
 				<? echo Form::input('settle_date_from', $form->settle_date_from, array('id'=>'settle_date_from')); ?>
@@ -29,7 +33,7 @@ echo Form::hidden('deposit_settle_id', '', array('id'=>'deposit_settle_id'));
 	<input type="button" onclick="goToExport(this)" value="Excel" />
 <? echo Form::close(); ?>
 
-<div style="width:700px">
+<div style="width:800px">
 	<? echo $form->pager(); ?>
 	<table border="1">
 		<tr>
@@ -41,18 +45,22 @@ echo Form::hidden('deposit_settle_id', '', array('id'=>'deposit_settle_id'));
 			<td>Remark</td>
 			<td>Remark (入金管理)</td>
 			<td>輸入日期 </td>
+			<td>訂單deposit</td>
+			<td>餘下deposit</td>
 			<td>確認</td>
 		</tr>
 		<? foreach ($form->depositSettleHistory as $history) { ?>
 		<tr>
 			<td><?=$history->order_id ?></td>
 			<td><?=$history->cust_code ?></td>
-			<td><?=$history->settle_amt ?></td>
+			<td><?=GlobalFunction::displayNumber($history->settle_amt) ?></td>
 			<td><?=$history->fee ?></td>
 			<td><?=$history->settle_date ?></td>
 			<td><?=$history->remark ?></td>
 			<td><?=$history->accountant_remark ?></td>
 			<td><?=date("Y-m-d", strtotime($history->create_date)) ?></td>
+			<td><?=GlobalFunction::displayNumber($history->order->deposit_amt) ?></td>
+			<td><?=GlobalFunction::displayNumber($history->order->deposit_amt - $history->order->confirm_deposit_amt) ?></td>
 			<td>
 				<? if ($history->is_confirm == Model_DepositSettle::CONFIRM_NO) { ?>
 					<input type="button" value="確認" onclick="confirm(<?=$history->id ?>)" />

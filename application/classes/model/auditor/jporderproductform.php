@@ -91,11 +91,13 @@ class Model_Auditor_JpOrderProductForm extends Model_PageForm {
 								->join('order')->on('order.id', '=', 'auditor_jporderproduct.order_id')
 								->where('auditor_jporderproduct.id', '=', $formValue['id'])
 								->select('order.order_type_id')
+								->select('order.is_kaito')
 								->find();
 				
 				$orderProduct->jp_auditor_remark = $formValue['auditor_remark'];
 				
-				if ($orderProduct->order_type_id != Model_OrderType::ID_KAITO) {
+				if ($orderProduct->is_kaito != 'Y') {
+				//if ($orderProduct->order_type_id != Model_OrderType::ID_KAITO) {
 					$orderProduct->jp_status = Model_OrderProduct::STATUS_ACCOUNTANT; // Go to next step
 				} else {
 					$orderProduct->jp_status = Model_OrderProduct::STATUS_COMPLETE;
@@ -114,7 +116,8 @@ class Model_Auditor_JpOrderProductForm extends Model_PageForm {
 				$container->create_date = DB::expr('current_timestamp');
 				$container->created_by = Auth::instance()->get_user()->username;
 				
-				if ($orderProduct->order_type_id != Model_OrderType::ID_KAITO) {
+				if ($orderProduct->is_kaito != 'Y') {
+				//if ($orderProduct->order_type_id != Model_OrderType::ID_KAITO) {
 					$container->status = Model_Container::STATUS_READY_FOR_DELIVERY_NOTE;
 				} else {
 					$container->status = Model_Container::STATUS_COMPLETE;

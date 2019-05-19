@@ -32,7 +32,7 @@ class Model_Sales_CustomerForm {
 		
 		$user = Auth::instance()->get_user();
 		if ($user->isSales()) {
-			$orm->where('created_by', '=', $user->username);
+			$orm->where('sales_code', '=', $user->username);
 		}
 		
 		$this->customers = $orm->order_by('cust_code')->find_all();
@@ -63,6 +63,7 @@ class Model_Sales_CustomerForm {
 		if (empty($this->customer_id)) {
 			// New record
 			$customer = new Model_Customer();
+			$customer->sales_code = $user->username;
 			$customer->created_by = $user->username;
 			$customer->create_date = DB::expr('current_timestamp');
 		} else {
@@ -139,7 +140,7 @@ class Model_Sales_CustomerForm {
 		$customer = new Model_Customer($customer_id);
 		
 		// Check privilege
-		if ($user->isSales() && $customer->created_by != $user->username) {
+		if ($user->isSales() && $customer->sales_code != $user->username) {
 			throw new HTTP_Exception_401(__('error.no_authorization.modify'));
 		}
 		

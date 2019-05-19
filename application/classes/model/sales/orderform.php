@@ -461,6 +461,17 @@ class Model_Sales_OrderForm {
 		$this->order->delivery_address2 = trim($this->order->delivery_address2);
 		$this->order->delivery_address3 = trim($this->order->delivery_address3);
 		
+		// Determinie whether it is kaito order
+		$this->order->is_kaito = Model_Order::KAITO_NO;
+		if ($this->order->order_type_id == Model_OrderType::ID_KAITO) {
+			$this->order->is_kaito = Model_Order::KAITO_YES;
+		} else {
+			$customer = new Model_Customer($this->order->customer_id);
+			if ($customer->is_kaito == Model_Customer::KAITO_YES) {
+				$this->order->is_kaito = Model_Order::KAITO_YES;
+			}
+		}
+		
 		/**
 		 * Save to DB
 		 */

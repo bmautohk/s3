@@ -136,7 +136,7 @@
 	<br><br>
 		<? if ($form->order->deposit_amt != 0) { ?>
 		<tr>
-			<td class="detail">訂金</td>
+			<td class="detail">頭金</td>
 			<td class="detail"></td>
 			<td class="detail"></td>
 			<td class="detail"></td>

@@ -151,6 +151,8 @@ class Model_Warehouse_KaitoProductForm extends Model_PageForm {
 				->join('customer')->on('customer.id', '=', 'order.customer_id')
 				->distinct(true)
 				->select('customer.cust_code')
+				->order_by('order_id', 'desc')
+				->order_by('product_cd')
 				->limit($limit)
 				->offset($offset);
 		
@@ -196,7 +198,7 @@ class Model_Warehouse_KaitoProductForm extends Model_PageForm {
 			$orm->where('order.order_date', '<', $toDate);
 		}
 		
-		$orm->where('order.order_type_id', '=', Model_OrderType::ID_KAITO);
+		$orm->where('order.is_kaito', '=', Model_Order::KAITO_YES);
 		
 		return $orm;
 	}

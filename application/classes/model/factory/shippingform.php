@@ -168,9 +168,6 @@ class Model_Factory_ShippingForm {
 				return false;
 			}
 			
-			// Get order type
-			$order_type_id = $orderProduct->order->order_type_id;
-				
 			$container = $this->getDraftContainer($this->order_product_id);
 				
 			$user = Auth::instance()->get_user();
@@ -187,7 +184,8 @@ class Model_Factory_ShippingForm {
 			$container->orig_delivery_qty = $container->delivery_qty;
 			$container->last_updated_by = $user->username;
 			
-			if ($order_type_id != Model_OrderType::ID_KAITO) {
+			if ($orderProduct->order->is_kaito == Model_Order::KAITO_NO) {
+				// Non-kaito order
 				$container->status = Model_Container::STATUS_INIT;
 			} else {
 				// Order Type = Kaito

@@ -1,9 +1,19 @@
-<? $customer = $form->customer; ?>
+<?
+$customer = $form->customer;
+$user = Auth::instance()->get_user();
+?>
 <div id="customer_add_form">
 	<? echo Form::open("sales/customer_save", array('id'=>'form1')); ?>
 		<? echo Form::hidden('customer_id', $form->customer_id); ?>
 		
 		<table>
+			<? if ($form->customer_id > 0 && $user->isAdmin()) { ?>
+				<tr>
+					<td>Sales Code:</td>
+					<td><? echo Form::input('sales_code', $customer->sales_code); ?></td>
+				</tr>
+			<? } ?>
+
 			<tr>
 				<td>公司名字:</td>
 				<td><? echo Form::input('name', $customer->name); ?></td>

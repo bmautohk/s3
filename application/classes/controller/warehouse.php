@@ -135,15 +135,19 @@ class Controller_Warehouse extends Controller_CustomTemplate {
 		
 		if ($form->addDeliveryNoteAction($container_id)) {
 			$this->template->set('success', __('save.success'));
+			
+			// Display
+			// Go back to "貨倉List"
+			$this->action_list();
 		} else {
 			$this->template->set('errors', $form->errors);
+			
+			// Display
+			$view = View::factory('warehouse/container_list');
+			$view->set('form', $form);
+			$this->template->set('content', $view);
+			$this->template->set('submenu', 'list');
 		}
-		
-		// Display
-		$view = View::factory('warehouse/container_list');
-		$view->set('form', $form);
-		$this->template->set('content', $view);
-		$this->template->set('submenu', 'list');
 	}
 	
 	public function action_return_to_factory() {

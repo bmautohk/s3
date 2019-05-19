@@ -219,7 +219,11 @@ class Model_Accountant_InvoiceForm extends Model_PageForm {
 								$relatedOrderIdsAndInvoiceAmt[$orderProduct->order_id] = 0;
 							}
 							
-							$relatedOrderIdsAndInvoiceAmt[$orderProduct->order_id] += $invoiceDetail->market_price_rmb * $invoiceDetail->qty * (1 + $deliveryNote->tax_rate);
+							if ($invoiceDetail->is_tax == Model_OrderProduct::TAX_INCLUDE) {
+								$relatedOrderIdsAndInvoiceAmt[$orderProduct->order_id] += $invoiceDetail->market_price_rmb * $invoiceDetail->qty * (1 + $deliveryNote->tax_rate);
+							} else {
+								$relatedOrderIdsAndInvoiceAmt[$orderProduct->order_id] += $invoiceDetail->market_price_rmb * $invoiceDetail->qty;
+							}
 						}
 					} else if ($deliveryNoteDetail->source == Model_DeliveryNoteDetail::SOURCE_DELIVERY_FEE) {
 						// Get ORDER_ID for calculating deposit

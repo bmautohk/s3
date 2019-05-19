@@ -3,6 +3,9 @@
 class Model_Customer extends ORM {
 	public $_table_name = 'customer';
 	
+	const KAITO_YES = "Y";
+	const KAITO_NO = "N";
+	
 	protected $_table_columns = array(
 			"id" => array("type" => "int"),
 			"name" => array("type" => "string"),
@@ -22,6 +25,8 @@ class Model_Customer extends ORM {
 			"bank_account_id" => array("type" => "int"),
 			"last_order_date" => array("type" => "timestamp"),
 			"parent_customer_id" => array("type" => "int"),
+			"is_kaito" => array("type" => "string"),
+			"sales_code" => array("type" => "string"),
 			"created_by" => array("type" => "string"),
 			"create_date" => array("type" => "timestamp"),
 			"last_updated_by" => array("type" => "string"),
@@ -49,7 +54,7 @@ class Model_Customer extends ORM {
 		if (!$user->isSales()) {
 			$customers = ORM::factory('customer')->order_by('cust_code')->find_all();
 		} else {
-			$customers = ORM::factory('customer')->where('created_by', '=', $user->username)->order_by('cust_code')->find_all();
+			$customers = ORM::factory('customer')->where('sales_code', '=', $user->username)->order_by('cust_code')->find_all();
 		}
 
 		if ($hasAll) {

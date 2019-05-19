@@ -27,7 +27,7 @@
 	</tr>
 	<? foreach ($form->customers as $customer) { ?>
 	<tr>
-		<td><?=$customer->created_by ?></td>
+		<td><?=$customer->sales_code ?></td>
 		<td><?=$customer->name ?></td>
 		<td><?=$customer->postal_code ?></td>
 		<td><?=$customer->address1 ?></td>

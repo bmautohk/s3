@@ -230,7 +230,7 @@ class Model_Warehouse_SearchForm extends Model_PageForm {
 			$orm->where('order.order_date', '<', $toDate);
 		}
 		
-		$orm->where('order.order_type_id', '<>', Model_OrderType::ID_KAITO);
+		$orm->where('order.is_kaito', '=', Model_Order::KAITO_NO);
 		
 		return $orm;
 	}
