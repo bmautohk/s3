@@ -1,4 +1,6 @@
 <?php
+require_once APPPATH.'classes/vendor/PHPExcel.php';
+
 class Model_Sales_OrderForm {
 	public $action;
 	public $order_id;
@@ -64,6 +66,60 @@ class Model_Sales_OrderForm {
 					}
 					$this->tempProductMasters[] = $tempProductMaster;
 				}
+			}
+		}
+	}
+
+	public function populateByImportFile($_POST, $_FILES) {
+		$uplFile = $_FILES["uplFile"];
+		// var_dump($uplFile);
+
+		$this->order = new Model_Order();
+		$this->order->order_type_id = $_POST['order_type_id'];
+		$this->order->customer_id = $_POST['customer_id'];
+		$today = new DateTime();
+		$this->order->delivery_date = $today->format('Y-m-d');
+
+		$objPHPExcel = new PHPExcel();
+
+		$objReader = PHPExcel_IOFactory::createReader('Excel2007');
+		$objReader->setReadDataOnly(true);
+		$objPHPExcel = $objReader->load($uplFile['tmp_name']);
+
+		$this->orderProducts = array();
+		$worksheet = $objPHPExcel->getActiveSheet();
+		$rowNo = 0;
+		foreach ($worksheet->getRowIterator() as $row) {
+			$rowNo = $row->getRowIndex();
+			if ($rowNo == 1) {
+				// Skip 1st row (i.e. header)
+				continue;
+			}
+
+			$orderProduct = new Model_OrderProduct();
+			$orderProduct->delivery_fee = 0;
+
+			$orderProduct->product_cd = $worksheet->getCellByColumnAndRow(0, $rowNo)->getValue();
+			$orderProduct->qty = $worksheet->getCellByColumnAndRow(1, $rowNo)->getValue();
+			$orderProduct->qty = intval($orderProduct->qty);
+
+			$orderProduct->delivery_fee = $worksheet->getCellByColumnAndRow(2, $rowNo)->getValue();
+
+			$product = ORM::factory('pmProductMaster')
+						->where('no_jp', '=', $orderProduct->product_cd)
+						->find();
+				
+			if ($product->loaded()) {
+				$orderProduct->market_price = $product->business_price;
+			}
+			
+			if (!empty($orderProduct->product_cd) || !empty($orderProduct->qty) || !empty($orderProduct->market_price)
+						|| !empty($orderProduct->delivery_fee) || !empty($orderProduct->product_cd)) {
+				$this->orderProducts[] = $orderProduct;
+				
+				$tempProductMaster = new Model_TempProductMaster();
+				$tempProductMaster->no_jp = $orderProduct->product_cd;
+				$this->tempProductMasters[] = $tempProductMaster;
 			}
 		}
 	}
@@ -227,6 +283,16 @@ class Model_Sales_OrderForm {
 		$this->retrieve($this->order_id);
 		
 		return $result;
+	}
+
+	public function processImportAction() {
+		$defaultMethod = ORM::factory('deliveryMethod')
+					->order_by('id')
+					->find();
+		$this->order->delivery_method_id = $defaultMethod->id;
+		if ($this->processSaveAction(false)) {
+			$this->goToKaitoStaff();
+		}
 	}
 	
 	public function isTempOrderType() {

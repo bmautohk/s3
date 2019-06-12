@@ -139,7 +139,29 @@ class Controller_Sales extends Controller_CustomTemplate {
 		$this->template->set('content', $view);
 		$this->template->set('submenu', 'order_add');
 	}
-	
+
+	public function action_order_import() {
+		$this->checkPrivilege('sales_order_list', Model_RoleMatrix::PERMISSION_WRITE);
+		$view = View::factory('sales/order_import');
+
+		// Display
+		$this->template->set('content', $view);
+		$this->template->set('submenu', 'order_import');
+
+	}
+
+	public function action_order_import_save() {
+		$this->checkPrivilege('sales_order_list', Model_RoleMatrix::PERMISSION_WRITE);
+		$form = new Model_Sales_OrderForm();
+		$form->populateByImportFile($_POST, $_FILES);
+
+		$form->processImportAction();
+		
+		// Display
+		$this->auto_render = false; // Don't render template
+		echo json_encode(array('errors' => $form->errors));
+	}
+		
 	public function action_quotation_print() {
 		$this->checkPrivilege('sales_order_list');
 	
@@ -204,7 +226,7 @@ class Controller_Sales extends Controller_CustomTemplate {
 			$this->template->set('submenu', 'order_return');
 		}
 	}
-	
+
 /* ***************************************************************************************************************
  * 輸入經費
 ****************************************************************************************************************/

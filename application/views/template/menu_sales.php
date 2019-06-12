@@ -11,6 +11,9 @@
 							<TD width="156" <?=$submenu == 'order_add' ? 'class=\'submenu\'' : '' ?>>
 								<span class="cat cat"><? echo HTML::anchor('/sales/order_add', '訂單', array('class'=>'big')); ?></span>
 							</TD>
+							<TD width="156" <?=$submenu == 'order_import' ? 'class=\'submenu\'' : '' ?>>
+								<span class="cat cat"><? echo HTML::anchor('/sales/order_import', '載入訂單', array('class'=>'big')); ?></span>
+							</TD>
 							<TD width="156" <?=$submenu == 'order_return' ? 'class=\'submenu\'' : '' ?>>
 								<span class="cat cat"><? echo HTML::anchor('/sales/order_return', '赤伝', array('class'=>'big')); ?></span>
 							</TD>
