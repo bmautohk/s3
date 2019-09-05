@@ -47,6 +47,7 @@ class Model_Sales_OrderForm {
 				}
 				
 				$orderProduct->values($value);
+				echo 'market_price'.$orderProduct->market_price;
 				
 				if (!empty($orderProduct->product_cd) || !empty($orderProduct->qty) || !empty($orderProduct->market_price)
 						|| !empty($orderProduct->delivery_fee) || !empty($orderProduct->product_cd)) {
@@ -110,7 +111,7 @@ class Model_Sales_OrderForm {
 						->find();
 				
 			if ($product->loaded()) {
-				$orderProduct->market_price = $product->business_price;
+				$orderProduct->market_price = $product->other;
 			}
 			
 			if (!empty($orderProduct->product_cd) || !empty($orderProduct->qty) || !empty($orderProduct->market_price)
@@ -177,6 +178,7 @@ class Model_Sales_OrderForm {
 				$tempProductMaster = new Model_TempProductMaster();
 				$tempProductMaster->kaito = $orderProduct->productMaster->kaito;
 				$tempProductMaster->business_price = $orderProduct->productMaster->business_price;
+				$tempProductMaster->other = $orderProduct->productMaster->other;
 				$tempProductMaster->product_desc = $orderProduct->productMaster->product_desc;
 				$tempProductMaster->made = $orderProduct->productMaster->made;
 				$tempProductMaster->model = $orderProduct->productMaster->model;
@@ -408,22 +410,23 @@ class Model_Sales_OrderForm {
 				$pmProduct->kaito = $product->kaito;
 				$pmProduct->supplier = $product->supplier;
 				$pmProduct->business_price = $product->business_price;
+				$pmProduct->other = $product->other;
 				$pmProduct->accessory_remark = $product->accessory_remark;
 				$pmProduct->status = Model_TempProductMaster::STATUS_ACTIVE;
 				
 				$this->tempProductMasters[$idx] = $pmProduct;
 				
 				// Check business price
-				if ($product->business_price == NULL || $product->business_price == 0) {
+				if ($product->other == NULL || $product->other == 0) {
 					$isValid = false;
-					$this->errors[] = 'Row '.$rowNo.': '.$orderProduct->product_cd.' 営業値段  = 0';
+					$this->errors[] = 'Row '.$rowNo.': '.$orderProduct->product_cd.' 批发价  = 0';
 					continue;
 				}
 				
-				if ($isCheckBusinessPrcie && $product->business_price != NULL && $orderProduct->market_price < $product->business_price) {
-					// sale price < 營業值段
+				if ($isCheckBusinessPrcie && $product->other != NULL && $orderProduct->market_price < $product->other) {
+					// sale price < 批发价
 					$isValid = false;
-					$this->errors[] = 'Row '.$rowNo.': 売値 ['.$orderProduct->market_price.'] is less than 営業値段 ['.($product->business_price).'].';
+					$this->errors[] = 'Row '.$rowNo.': 売値 ['.$orderProduct->market_price.'] is less than 批发价 ['.($product->other).'].';
 					continue;
 				}
 			} else {

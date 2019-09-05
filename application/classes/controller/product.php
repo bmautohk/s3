@@ -17,6 +17,7 @@ class Controller_Product extends Controller {
 			$item['label'] = $product->no_jp;
 			$item['value'] = $product->no_jp;
 			$item['business_price'] = $product->business_price;
+			$item['other'] = $product->other;
 			$item['product_desc'] = $product->product_desc;
 			$item['made'] = $product->made;
 			$item['model'] = $product->model;
@@ -107,6 +108,7 @@ class Controller_Product extends Controller {
 			$item['label'] = $product->no_jp;
 			$item['value'] = $product->no_jp;
 			$item['business_price'] = $product->business_price;
+			$item['other'] = $product->other;
 			$item['product_desc'] = $product->product_desc;
 			$item['made'] = $product->made;
 			$item['model'] = $product->model;

@@ -35,6 +35,7 @@ class Model_PMProductMaster extends ORM {
 			"supplier" => array("type" => "string"),
 			/*"purchase_cost" => array("type" => "double"),*/
 			"business_price" => array("type" => "double"),
+			"other" => array("type" => "double"),
 			//"auction_price" => array("type" => "double"),
 			/*"kaito_price" => array("type" => "double"),
 			"factory_date" => array("type" => "timestamp"),

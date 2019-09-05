@@ -25,6 +25,7 @@ class Model_TempProductMaster extends ORM {
 			"kaito" => array("type" => "double"),
 			"supplier" => array("type" => "string"),
 			"business_price" => array("type" => "double"),
+			"other" => array("type" => "double"),
 			"accessory_remark" => array("type" => "string"),
 			"status" => array("type" => "string"),
 	);

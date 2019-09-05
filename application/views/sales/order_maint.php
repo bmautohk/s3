@@ -116,7 +116,7 @@ $displayRate = 'Rate: RMB<->USD '.$order->rmb_to_usd_rate.', RMB<->JPY '.$order-
 					<td></td>
 					<td></td>
 					<td></td>
-					<td><?=$product->business_price ?></td>
+					<td><?=$product->other ?></td>
 					<td><?=$product->product_desc ?></td>
 					<td><?=$product->made ?></td>
 					<td><?=$product->model ?></td>
@@ -499,7 +499,7 @@ $displayRate = 'Rate: RMB<->USD '.$order->rmb_to_usd_rate.', RMB<->JPY '.$order-
 
 	function assigProductInfo (elem, data) {
 		if (!isTempOrderType) {
-			elem.html(data.business_price);
+			elem.html(data.other);
 			elem = elem.next();
 
 			elem.html(data.product_desc);
