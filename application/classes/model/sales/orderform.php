@@ -47,7 +47,6 @@ class Model_Sales_OrderForm {
 				}
 				
 				$orderProduct->values($value);
-				echo 'market_price'.$orderProduct->market_price;
 				
 				if (!empty($orderProduct->product_cd) || !empty($orderProduct->qty) || !empty($orderProduct->market_price)
 						|| !empty($orderProduct->delivery_fee) || !empty($orderProduct->product_cd)) {
@@ -417,9 +416,11 @@ class Model_Sales_OrderForm {
 				$this->tempProductMasters[$idx] = $pmProduct;
 				
 				// Check business price
-				if ($product->other == NULL || $product->other == 0) {
+				$customer = new Model_Customer($this->order->customer_id);
+				if ( ($customer->is_kaito == 'N')
+					&& ($product->other == NULL || $product->other == 0) ) {
 					$isValid = false;
-					$this->errors[] = 'Row '.$rowNo.': '.$orderProduct->product_cd.' 批发价  = 0';
+					$this->errors[] = 'Row '.$rowNo.': '.$orderProduct->product_cd.' 批发价 = 0';
 					continue;
 				}
 				
