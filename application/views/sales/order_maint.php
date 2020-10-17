@@ -72,7 +72,7 @@ $displayRate = 'Rate: RMB<->USD '.$order->rmb_to_usd_rate.', RMB<->JPY '.$order-
 				<td>tax included稅</td>
 				<td>輸入経費</td>
 				<td>delivery fee (per item)國內送料 (￥)</td>
-				<td>參考價格</td>
+				<td>auction値段</td>
 				<td>在庫數量(參考)</td>
 				<td>海渡價</td>
 				<td><? echo __('label.business_price'); ?> (RMB)</td>
@@ -113,10 +113,10 @@ $displayRate = 'Rate: RMB<->USD '.$order->rmb_to_usd_rate.', RMB<->JPY '.$order-
 					<td><? echo Form::select('orderProducts['.$idx.'][is_tax]', $isTaxOptions, $orderProduct->is_tax); ?></td>
 					<td><? echo Form::select('orderProducts['.$idx.'][is_shipping_fee]', $isShippingFeeOptions, $orderProduct->is_shipping_fee); ?></td>
 					<td><? echo Form::input('orderProducts['.$idx.'][delivery_fee]', $orderProduct->delivery_fee); ?></td>
+					<td><?=$product->auction_price ?></td>
 					<td></td>
-					<td></td>
-					<td></td>
-					<td><?=$product->other ?></td>
+					<td><?=$product->kaito*$form->kaitoPricingNumber ?></td>
+					<td><?=$product->other*$form->redLineNumber ?></td>
 					<td><?=$product->product_desc ?></td>
 					<td><?=$product->made ?></td>
 					<td><?=$product->model ?></td>
@@ -491,7 +491,7 @@ $displayRate = 'Rate: RMB<->USD '.$order->rmb_to_usd_rate.', RMB<->JPY '.$order-
 			data: {term: $(elem).val()},
 			context: elem,
 			success: function(data) {
-				var elem = $(this).parent().siblings('td:nth-of-type(12)');
+				var elem = $(this).parent().siblings('td:nth-of-type(9)');
 				assigProductInfo(elem, data);
 			}
 		});
@@ -499,6 +499,15 @@ $displayRate = 'Rate: RMB<->USD '.$order->rmb_to_usd_rate.', RMB<->JPY '.$order-
 
 	function assigProductInfo (elem, data) {
 		if (!isTempOrderType) {
+			
+			elem.html(data.auction_price);
+			elem = elem.next();
+			 
+			elem = elem.next();
+			
+			elem.html(data.kaito);
+			elem = elem.next();
+			
 			elem.html(data.other);
 			elem = elem.next();
 
@@ -538,7 +547,17 @@ $displayRate = 'Rate: RMB<->USD '.$order->rmb_to_usd_rate.', RMB<->JPY '.$order-
 			elem.html(data.supplier);
 
 		} else {
-			elem.children("input[name$='[business_price]']").val(data.business_price);
+			elem.children("input[name$='[auction_price]']").val(data.auction_price);
+			elem = elem.next();
+			
+			
+			elem = elem.next();
+			
+			elem.children("input[name$='[kaito]']").val(data.kaito);
+			elem = elem.next();
+			
+			
+			elem.children("input[name$='[other]']").val(data.business_price);
 			elem = elem.next();
 			
 			elem.children("input[name$='[product_desc]']").val(data.product_desc);

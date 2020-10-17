@@ -36,9 +36,9 @@ class Model_PMProductMaster extends ORM {
 			/*"purchase_cost" => array("type" => "double"),*/
 			"business_price" => array("type" => "double"),
 			"other" => array("type" => "double"),
-			//"auction_price" => array("type" => "double"),
-			/*"kaito_price" => array("type" => "double"),
-			"factory_date" => array("type" => "timestamp"),
+			"auction_price" => array("type" => "double"),
+			"kaito_price" => array("type" => "double"),
+			/*"factory_date" => array("type" => "timestamp"),
 			"pack_remark" => array("type" => "string"),
 			"order_date" => array("type" => "timestamp"),
 			"progress" => array("type" => "string"),

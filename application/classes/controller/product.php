@@ -100,6 +100,27 @@ class Controller_Product extends Controller {
 	public function action_search_by_cd() {
 		$product_cd = $_GET['term'];
 		
+		
+		//add autocomplete 3 adminconfig1.5 calculation 20201016
+			$queryResult = DB::select('code','value')
+				->from('profit_config_15')
+				->execute();
+		
+		 $auction=0;
+		 $kaito_pricing=0;
+		 $red_line=0;
+		foreach($queryResult as $obj) {
+			if ($obj['code']=='RED_LINE_NUMBER'){
+				$red_line=$obj['value'];
+			}else if ($obj['code']=='KAITO_PRICING_NUMBER'){
+				$kaito_pricing=$obj['value'];
+			}else if ($obj['code']=='AUCTION_VALUE_NUMBER'){
+				$auction=$obj['value'];
+			}
+		
+		}
+		//
+		
 		$product = ORM::factory('pmProductMaster')
 					->where('no_jp', '=', $product_cd)
 					->find();
@@ -108,7 +129,9 @@ class Controller_Product extends Controller {
 			$item['label'] = $product->no_jp;
 			$item['value'] = $product->no_jp;
 			$item['business_price'] = $product->business_price;
-			$item['other'] = $product->other;
+			$item['auction_price'] = $product->auction_price*$auction;
+			$item['kaito'] = $product->kaito*$kaito_pricing;
+			$item['other'] = $product->other*$red_line;
 			$item['product_desc'] = $product->product_desc;
 			$item['made'] = $product->made;
 			$item['model'] = $product->model;

@@ -11,6 +11,11 @@ class Model_Sales_OrderForm {
 	public $isPrintQuotation;
 	public $taxRate;
 	
+	//add 3 para from 1.5 main 20201016
+	public $auctionValueNumber;
+	public $kaitoPricingNumber;
+	public $redLineNumber;
+		
 	public $errors;
 	public $warnings;
 	
@@ -413,6 +418,10 @@ class Model_Sales_OrderForm {
 				$pmProduct->accessory_remark = $product->accessory_remark;
 				$pmProduct->status = Model_TempProductMaster::STATUS_ACTIVE;
 				
+				//add two more fields  20201016
+				$pmProduct->kaito_price = $product->kaito_price;
+				$pmProduct->auction_price = $product->auction_price;
+				
 				$this->tempProductMasters[$idx] = $pmProduct;
 				
 				// Check business price
@@ -424,10 +433,10 @@ class Model_Sales_OrderForm {
 					continue;
 				}
 				
-				if ($isCheckBusinessPrcie && $product->other != NULL && $orderProduct->market_price < $product->other) {
+				if ($isCheckBusinessPrcie && $product->other != NULL && $orderProduct->market_price < ($product->other*$this->redLineNumber)) {
 					// sale price < 批发价
 					$isValid = false;
-					$this->errors[] = 'Row '.$rowNo.': 売値 ['.$orderProduct->market_price.'] is less than 批发价 ['.($product->other).'].';
+					$this->errors[] = 'Row '.$rowNo.': 売値 ['.$orderProduct->market_price.'] is less than 批发价 ['.($product->other*$this->redLineNumber).'].';
 					continue;
 				}
 			} else {
@@ -699,6 +708,11 @@ class Model_Sales_OrderForm {
 		
 		// Find tax
 		$this->taxRate = Model_ProfitConfig15::getTaxRate();
+		
+		//Find new 3 para 20201016
+		$this->auctionValueNumber = Model_ProfitConfig15::getAuctionValueNumber();
+		$this->kaitoPricingNumber = Model_ProfitConfig15::getKaitoPricingNumber();
+		$this->redLineNumber = Model_ProfitConfig15::getRedLineNumber();
 	}
 	
 	private function getExistingOrderProductId($order_id) {
